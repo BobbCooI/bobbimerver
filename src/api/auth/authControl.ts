@@ -5,8 +5,8 @@ import CryptoJS from "crypto-js";
 import jwt from "jsonwebtoken";
 import { Request, Response } from 'express';
 interface jwtUserSign {
-  username: string; 
-  userID: string; 
+  username: string;
+  userID: string;
   UUID: string
 }
 function jwtSignUser(user: jwtUserSign) {

@@ -83,10 +83,10 @@ if(typeof res  === "string") {
   if(res.content) obj.content = res.content;
   if(res.embeds) obj.embeds = res.embeds;
   if(res.file) obj.file = res.file;
-  if(_.isEmpty(obj)) throw `No content to send back for interaction ${command.props.triggers[0]} ?`
+  if(_.isEmpty(obj)) throw new Error(`No content to send back for interaction ${command.props.triggers[0]} ?`)
 res = obj;
 } else {
-  throw `What kind of return for ${command.props.triggers[0]}?`
+  throw new Error(`What kind of return for ${command.props.triggers[0]}?`)
 }
 
 	console.log(res);

@@ -27,7 +27,7 @@ export default new GenericCommand(
     if(mainURL) {
       addCD();
       return Bobb!.utils.decode64(mainURL.link);
-    } else throw 'unknown error 😮‍💨'
+    } else throw new Error('unknown error 😮‍💨')
  } catch(e) {
    return e || 'there was an error fetching with that link..'
  }
@@ -37,7 +37,7 @@ export default new GenericCommand(
     if(mainURL) {
       addCD()
       return Bobb!.utils.decode64(mainURL.link);
-    } else throw 'unknown error 😮‍💨'
+    } else throw new Error('unknown error 😮‍💨')
      
    } catch(e) {
     return e || 'there was an error fetching with that link..'

@@ -15,10 +15,10 @@ export default async function gogoScrap(gogoLink:string)  {
     const streamServer = /\/\/streamani\.net\/loadserver\.php\?([a-zA-Z-\/0-9_=;+%&])+/g;
     const sourceReg = /(sources:\s?\[)({.*}),?]/gm;
     
-    if (!goDef.exec(gogoLink)) throw "Invalid Link";
+    if (!goDef.exec(gogoLink)) throw new Error("Invalid Link");
     const firstHTML = (await got(gogoLink)).body;
     let toApi:string|null= parseGoLink(goStream.exec(firstHTML))
-    if (toApi === null )throw "Could not get source. Check the link to see if it is correct.";
+    if (toApi === null )throw new Error("Could not get source. Check the link to see if it is correct.");
     toApi = `https:${toApi}`
     const nextHTML = (await got(toApi)).body;
     
@@ -31,7 +31,7 @@ export default async function gogoScrap(gogoLink:string)  {
       : null;*/
     const toServer:string|null=`https:${streamServer.exec(nextHTML)?.[0]}`;
     console.log(toServer);
-    if (toServer === null) throw "Could not get stream link";
+    if (toServer === null) throw new Error("Could not get stream link");
     const serverHTML = (await got(toServer)).body;
     let $server = cheerio.load(serverHTML);
     const textNode = $server(".videocontent > script").text();
@@ -42,17 +42,17 @@ export default async function gogoScrap(gogoLink:string)  {
         .replace(/label:/g, '"label":');
       var sourceEx = sourceReg.exec(scriptText);
       let link:any= sourceEx?.[2];
-      if(!link) throw "Could not get stream.";
+      if(!link) throw new Error("Could not get stream.");
         link = JSON.parse(link);
         return { success: true, link: utils.encode64(link.file) };
-    } else throw "Could not get source.";
+    } else throw new Error("Could not get source.");
     /* gSource.lastIndex = 0;
   let stream = goSource.exec(textNode);
   if(stream){
    stream = stream[0];
    return {
     success: true,link: utils.encode64(stream)
-  } 
+  }
 }else throw 'Could not get stream.';
 } else throw 'Could not get source.';*/
     // Specific for GoogleApi source only.

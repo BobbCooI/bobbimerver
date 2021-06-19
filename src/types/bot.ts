@@ -82,7 +82,7 @@ setContent(cont: string) {
     ]
      this.components[0]!.addComponents(comps);
      return this;
-   } 
+   }
   Paginator(message: Message, footer: string): any {
     if(!this.embeds || !this.embeds.length || this.embeds.length == 0) return;
     if (this.type == "message") {
