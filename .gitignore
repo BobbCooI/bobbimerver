@@ -26,4 +26,4 @@ pnpm-debug.log*
 .browserslistrc
 .glitch-assets
 session.yml
-!.github/
+dist/

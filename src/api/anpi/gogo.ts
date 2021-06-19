@@ -92,7 +92,7 @@ router.post(
               }
             };
             
-            if (Object.keys(addToSet)[0].includes("-1")) addToSet = {};
+    //        if (Object.keys(addToSet)[0].includes("-1")) addToSet = {};
           }
 
           console.log("addtoset", addToSet);
