@@ -57,27 +57,27 @@ export interface iUserModel extends iUser, Document {
 const userSchema: Schema<iUserModel> = new Schema({
  // Website
   username: { type: String },
-  loweruser: { type: String }, 
-  userID: { type: String }, 
-  email: { type: String }, 
-  ePassword: { type: String }, 
+  loweruser: { type: String },
+  userID: { type: String },
+  email: { type: String },
+  ePassword: { type: String },
   hPassword: { type: String },
-  UUID: { type: String }, 
-  dateCreate: { type: Date }, 
+  UUID: { type: String },
+  dateCreate: { type: Date },
 
-  // User Anime Watch Stuff 
+  // User Anime Watch Stuff
   episodesFetched: { type: Number },
   animeTitlesViewed: { type: Array },
   animesWatch: { type: Array },
   animeEpisodes: { type: Array },
   
   // Discord Stuff
-  verified: { type: Boolean }, 
-  discTag: { type: String }, 
-  discID: { type: String }, 
-  cmdSpam: { type: Number }, 
-  cmdsRan: { type: Number }, 
-  lastCmd: { type: Date } 
+  verified: { type: Boolean },
+  discTag: { type: String },
+  discID: { type: String },
+  cmdSpam: { type: Number },
+  cmdsRan: { type: Number },
+  lastCmd: { type: Date }
 });
 userSchema.pre<iUserModel>("save", function(next: any) {
   var user = this;
@@ -106,7 +106,7 @@ userSchema.pre<iUserModel>("save", function(next: any) {
 userSchema.methods.comparePassword = async function(
   password: string
 ): Promise<any> {
-  return await bcrypt.compare(password, this.hPassword);
+  return bcrypt.compare(password, this.hPassword);
 };
 
 export default model<iUserModel>("user", userSchema);

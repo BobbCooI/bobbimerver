@@ -38,7 +38,7 @@ export default new GenericCommand(
     let en = Date.now();
     if (search!.success === false) return search.error;
     else
-      return new Bobb!.Return("message").setEmbeds([new Discord.MessageEmbed() 
+      return new Bobb!.Return("message").setEmbeds([new Discord.MessageEmbed()
         .setTitle( "Choices")
         .setDescription( search.join("\n"))
         .setFooter(`Time taken: ${Bobb!.misc.timeMili(

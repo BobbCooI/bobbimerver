@@ -32,7 +32,7 @@ export class extClient extends Discord.Client {
     this.prefix = opts.prefix;
   }
 }
-/** Class Imports **/ 
+/** Class Imports **/
 
 export default class Bobb {
   client: extClient; //class pubApi implements Discord.Client {public api: object;};
@@ -88,7 +88,7 @@ this.Funi = Funi;
         this.client.on(
           listener,
           require(path.join(__dirname, "events", listener)).handle.bind(this)
-        );   
+        );
     }
     
   }
@@ -118,7 +118,7 @@ this.Funi = Funi;
     });
 await this.VRV.init();
 let auth = await this.VRV.auth();
-    if (!auth!.success) throw `Oh no! Trouble vrv auth ${auth.error}`;
+    if (!auth!.success) throw new Error(`Oh no! Trouble vrv auth ${auth.error}`);
     console.log("Ready for action ❣️");
 
   }

@@ -111,7 +111,7 @@ router.post(
             success: true,
             main: link.link
           });
-        } else throw "Unknown error while fetching the stream.";
+        } else throw new Error("Unknown error while fetching the stream.");
       } catch (e) {
         console.log(e);
         return res.send({

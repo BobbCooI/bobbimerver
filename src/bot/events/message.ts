@@ -189,7 +189,7 @@ args = args.slice(1)
       checkPerms.call(this, command, permissions, message);
     } else if (
       command.props.isNSFW &&
-      message.guild && 
+      message.guild &&
       message.channel.type.toUpperCase() !== "DM" &&
       !(message.channel as TextChannel).nsfw
     ) {
@@ -197,8 +197,8 @@ args = args.slice(1)
         embeds: [new Discord.MessageEmbed()
          .setTitle("NSFW not allowed here")
          .setDescription("Use NSFW commands in a NSFW marked channel (look in channel settings, dummy)")
-         .setColor(this.misc.randomColor())         
-         .setImage(gifs.nsfw)        
+         .setColor(this.misc.randomColor())
+         .setImage(gifs.nsfw)
         ]
       });
     }
@@ -343,12 +343,12 @@ this:Bobb,
 //  else throw `Unable to send multiple embeds. Try paginating ${command.props.triggers[0]}`
   }
  // if(res.file) obj.file = res.file;
-  if(_.isEmpty(res)) throw `No content to send back for interaction ${command.props.triggers[0]} ?`
+  if(_.isEmpty(res)) throw new Error(`No content to send back for interaction ${command.props.triggers[0]} ?`)
 //res = obj;
  } else if(typeof res == "string") {
    res = { content: res}
  }else{
-  throw `What kind of return for ${command.props.triggers[0]}?`
+  throw new Error(`What kind of return for ${command.props.triggers[0]}?`)
 }
   /*if (res instanceof Object) {
     if (res.reply) {
@@ -374,7 +374,7 @@ this:Bobb,
     }
   }*/
 console.log(res)
- return await message.channel.send(res).catch( (e: any) => this.loggers.reportError(e, message, command))
+ return message.channel.send(res).catch( (e: any) => this.loggers.reportError(e, message, command))
 }
 
 /*async function reportError(e: any, message: Message, command: GenericCommand) {

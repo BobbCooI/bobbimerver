@@ -6,7 +6,7 @@ import { iStats } from '../db/models/Stats';
 import {iGuild } from '../db/models/Guild';
 export default (Bobb: Bobb) => ({
   async fetchMemberInfo(search:any): Promise<iUser> {
-    return await Bobb.mongo.Person.findOne(search).catch((e:any) => Bobb.loggers.log(e.stack.length<1990?e.stack:e.message + "function: fetchMemberInfo", "error"))
+    return Bobb.mongo.Person.findOne(search).catch((e:any) => Bobb.loggers.log(e.stack.length<1990?e.stack:e.message + "function: fetchMemberInfo", "error"))
   },
 
   async updateMember(search:any, update:any):Promise<iUser> {
@@ -14,24 +14,24 @@ export default (Bobb: Bobb) => ({
 return ok
 },
    async updateBal(memberID:string, amt:number): Promise<iUser> {
-   return await this.updateMember({discID: memberID}, {$inc: {balance: amt}}).catch((e:any) => Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: updateBal->updateMember->findOneAndUpdate Person", "error"));
+   return this.updateMember({discID: memberID}, {$inc: {balance: amt}}).catch((e:any) => Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: updateBal->updateMember->findOneAndUpdate Person", "error"));
   },
  async createGuild(guild:Guild): Promise<iStats> {
     await Bobb.mongo.Guild.create({
       guild: guild.name,
       guildID: guild.id
     });
-    return await  Bobb.botStats.findOneAndUpdate({_id: "60070be0f12d9e041931de68"}, {$inc: {guildsJoined: 1}}, {new: true}).catch((e:any)=> Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: createGuild->findOneAndUpdate Stats", "error"));
+    return Bobb.botStats.findOneAndUpdate({_id: "60070be0f12d9e041931de68"}, {$inc: {guildsJoined: 1}}, {new: true}).catch((e:any)=> Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: createGuild->findOneAndUpdate Stats", "error"));
 
   },
   async deleteGuild(guild: Guild): Promise<iStats> {
     await Bobb.mongo.Guild.findOneAndDelete(
       { guildID: guild.id }).catch((e:any)=> Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: deleteGuild->findOneAndDelete guild", "error"));
-     return await Bobb.botStats.findOneAndUpdate({_id: "60070be0f12d9e041931de68"}, {$inc: {guildsLeft: 1}}, {new: true}).catch((e:any)=> Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: deleteGuild->findOneAndUpdate Stats", "error"));
+     return Bobb.botStats.findOneAndUpdate({_id: "60070be0f12d9e041931de68"}, {$inc: {guildsLeft: 1}}, {new: true}).catch((e:any)=> Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: deleteGuild->findOneAndUpdate Stats", "error"));
 
   },
  async getGuild(id: string, update: any):Promise<iGuild> {
-  return id && !update? await Bobb.mongo.Guild.findOne({guildID: id}).catch((e:any) => console.log(e)): await Bobb.mongo.Guild.findOneAndUpdate({guildID: id}, update, {new: true}).catch((e:any) => Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: getGuild->findOne", "error"));
+  return id && !update? Bobb.mongo.Guild.findOne({guildID: id}).catch((e:any) => console.log(e)): Bobb.mongo.Guild.findOneAndUpdate({guildID: id}, update, {new: true}).catch((e:any) => Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: getGuild->findOne", "error"));
   },
  async updateCooldowns(command: string, userID: string): Promise<any> {
     const pCommand = Bobb.cmds.find(c =>

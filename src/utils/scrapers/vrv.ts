@@ -308,7 +308,7 @@ selEp: string,
   }*/
 }
 setCacheEmbed(id: string, embed: MessageEmbed) {
- if(!this.cache[id]) throw `did not initperson ${id} yet.`
+ if(!this.cache[id]) throw new Error(`did not initperson ${id} yet.`)
   this.cache[id].embed = embed;
   this.cache[id].date = new Date();
 }
@@ -448,9 +448,9 @@ else return {success: false, error: "Could not get cms/disc signing keys."}
     ) {
       let type = this.options.type;
       let sign : cmsSign= this[`${type}Signing`];
-      if (!this.token || !this.tokenSecret) throw "Did not oAuthenticate yet!";
+      if (!this.token || !this.tokenSecret) throw new Error("Did not oAuthenticate yet!");
 
-      if (_.isEmpty(sign)) throw `Get the index credentials for ${type} first!`;
+      if (_.isEmpty(sign)) throw new Error(`Get the index credentials for ${type} first!`);
       // can not do it here because it replaces the current options for query etc.
 
       if (this.options.query)
@@ -465,7 +465,7 @@ else return {success: false, error: "Could not get cms/disc signing keys."}
         ? (gOptions.url += `${signQuery}`)
         : (gOptions.url += `&${signQuery}`);
     } else {
-      throw `[ERROR]: Invalid Options URL. Received ${gOptions.url} ${gOptions.method} `;
+      throw new Error(`[ERROR]: Invalid Options URL. Received ${gOptions.url} ${gOptions.method} `);
     }
 
     
