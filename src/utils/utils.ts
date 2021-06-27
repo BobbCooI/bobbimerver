@@ -1,9 +1,10 @@
 import CryptoJS from "crypto-js";
 import axios from "axios";
 import jwt from "jsonwebtoken";
-import Discord, {Snowflake} from "discord.js";
+import Discord, { Snowflake } from "discord.js";
 import { webhook } from "../types/discord";
-export function ordinate(i:number): string {
+import fs from 'fs';
+export function ordinate(i: number): string {
   var j = i % 10,
     k = i % 100;
   if (j == 1 && k != 11) {
@@ -15,8 +16,8 @@ export function ordinate(i:number): string {
   if (j == 3 && k != 13) {
     return i + "rd";
   }
-    return i + "th";
-};
+  return i + "th";
+}
 export async function createWebhook(opts: webhook): Promise<void> {
   if (!opts.embedContent) return;
   /*  opts = {
@@ -95,6 +96,7 @@ export function decode64(str: string): string {
   const decoded = CryptoJS.enc.Utf8.stringify(encodedWord);
   return decoded;
 }
+
 export function generateUUID(): string {
   var d = new Date().getTime();
   var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
@@ -109,7 +111,24 @@ export function generateUUID(): string {
 
   return uuid;
 }
+export function chunkSubstr(str: string, size: number): Array<string> {
+  const numChunks = Math.ceil(str.length / size);
+  const chunks = new Array(numChunks);
 
+  for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
+    chunks[i] = str.substr(o, size);
+  }
+
+  return chunks;
+}
+export function moveImg(img: string, fileTo: string): void {
+  var data = img.replace(/^data:image\/\w+;base64,/, "");
+  var buf = Buffer.from(data, "base64");
+  fs.writeFileSync(fileTo, buf);
+}
+export function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
 export const cmdReq = axios.create({
   baseURL: `https://discord.com/api/v8/applications/${process.env.appID}/guilds/${process.env.guildID}/commands`,
   responseType: "json",
@@ -118,13 +137,21 @@ export const cmdReq = axios.create({
     Authorization: `Bot ${process.env.botToken}`
   }
 });
-export function randomNumber(min: number, max: number): number {
-  if (!min || !max) {
-    // Default 0-100 if no args passed
-    min = 0;
-    max = 100;
-  }
+export function randomNumber(min: number = 0, max: number = 100): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+export function randomColor(): number {
+  return Math.floor(Math.random() * 0xffffff);
+}
+export function timeMili(millis: number): string {
+  var minutes = Math.floor(millis / 60000);
+  var seconds = (millis % 60000) / 1000;
+  return (
+    minutes.toString() +
+    ":" +
+    (seconds < 10 ? "0" : "") +
+    seconds.toFixed(2).toString()
+  );
 }
 export function makeID(length: number): string {
   var result = "";
@@ -135,6 +162,17 @@ export function makeID(length: number): string {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+}
+export function unembedify(embed: Discord.MessageEmbed, content?: string) {
+  let embedString = "";
+  if (embed.author) embedString += `**${embed.author.name}**\n`;
+  if (embed.title) embedString += `**${embed.title}**\n`;
+  if (embed.description) embedString += `${embed.description}\n`;
+  for (const field of embed.fields || []) {
+    embedString += `\n**${field.name}**\n${field.value}\n`;
+  }
+  if (embed.footer) embedString += `\n${embed.footer.text}`;
+  return `${content || ""}\n${embedString || "Empty embed"}`; // Returns a string
 }
 export function slugify(str: string): string {
   const a =
@@ -153,6 +191,35 @@ export function slugify(str: string): string {
     .replace(/\-\-+/g, "-") // Replace multiple - with single -
     .replace(/^-+/, ""); // Trim - from start of text
   //   .replace(/-+$/, '') // Trim - from end of text
+}
+
+export function formatNumber(num: number): string {
+  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}
+export function parseNum(thing: number | string): number | null {
+  if (typeof thing === "number") return thing;
+  let ret;
+  if (
+    (thing.includes("k") && thing.includes("e")) ||
+    (thing.includes("k") && thing.includes(",")) ||
+    (thing.includes("e") && thing.includes(","))
+  )
+    return null;
+  if (thing.includes("k")) {
+    let ind = thing.indexOf("e");
+    ret = `${thing.slice(0, ind)}000`;
+  } else if (thing.includes("e")) {
+    let ind = thing.indexOf("e");
+    let numAfterZero = thing.slice(ind + 1);
+    let amtOfZeros = "0".repeat(parseInt(numAfterZero));
+    ret = `${thing.slice(0, ind)}${amtOfZeros}`;
+  } else if (thing.includes(",")) {
+    ret = thing.replace(/,/g, "");
+  } else {
+    return null;
+  }
+
+  return parseInt(ret);
 }
 export function parseTime(s: number): string {
   // Pad to 2 or 3 digits, default is 2

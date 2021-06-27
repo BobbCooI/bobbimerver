@@ -115,55 +115,7 @@ slashCmds.forEach(async cmd => {
         }
       });
   },
-  parseTime(time) {
-    const methods = [
-      { name: "d", count: 86400 },
-      { name: "h", count: 3600 },
-      { name: "m", count: 60 },
-      { name: "s", count: 1 }
-    ];
-
-    const timeStr = [
-      Math.floor(time / methods[0].count).toString() + methods[0].name
-    ];
-    for (let i = 0; i < 3; i++) {
-      timeStr.push(
-        Math.floor(
-          (time % methods[i].count) / methods[i + 1].count
-        ).toString() + methods[i + 1].name
-      );
-    }
-
-    return timeStr.filter(g => !g.startsWith("0")).join(", ");
-  },
-  unembedify(embed, content) {
-    let embedString = "";
-    if (embed.author) embedString += `**${embed.author.name}**\n`;
-    if (embed.title) embedString += `**${embed.title}**\n`;
-    if (embed.description) embedString += `${embed.description}\n`;
-    for (const field of embed.fields || []) {
-      embedString += `\n**${field.name}**\n${field.value}\n`;
-    }
-    if (embed.footer) embedString += `\n${embed.footer.text}`;
-    return `${content || ""}\n${embedString || "Empty embed"}`; // Returns a string
-  },
-
-  randomNumber(min = 0, max = 100) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  },
-  randomColor() {
-    return Math.floor(Math.random() * 0xffffff);
-  },
-  timeMili(millis) {
-    var minutes = Math.floor(millis / 60000);
-    var seconds = (millis % 60000) / 1000;
-    return (
-      minutes.toString() +
-      ":" +
-      (seconds < 10 ? "0" : "") +
-      seconds.toFixed(2).toString()
-    );
-  },
+  
   async parseUser(message, person) {
     await message?.guild?.members?.fetch({ cache: true });
     const idMatcher = /^([0-9]{15,21})$/;
@@ -189,62 +141,6 @@ slashCmds.forEach(async cmd => {
     return undefined;
   },
 
-  formatNumber(num) {
-    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-  },
-  parseNum(thing) {
-    if (!parseInt(thing)) return null;
-    let ret;
-    if (
-      (thing.includes("k") && thing.includes("e")) ||
-      (thing.includes("k") && thing.includes(",")) ||
-      (thing.includes("e") && thing.includes(","))
-    )
-      return null;
-    if (thing.includes("k")) {
-      let ind = thing.indexOf("e");
-      ret = `${thing.slice(0, ind)}000`;
-    } else if (thing.includes("e")) {
-      let ind = thing.indexOf("e");
-      let numAfterZero = thing.slice(ind + 1);
-      let amtOfZeros = "0".repeat(parseInt(numAfterZero));
-      ret = `${thing.slice(0, ind)}${amtOfZeros}`;
-    } else if (thing.includes(",")) {
-      ret = thing.replace(/,/g, "");
-    } else {
-      return null;
-    }
-
-    return parseInt(ret);
-  },
-  chunkSubstr(str, size) {
-    const numChunks = Math.ceil(str.length / size);
-    const chunks = new Array(numChunks);
-
-    for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
-      chunks[i] = str.substr(o, size);
-    }
-
-    return chunks;
-  },
-  moveImg(img, file) {
-    var data = img.replace(/^data:image\/\w+;base64,/, "");
-    var buf = Buffer.from(data, "base64");
-    fs.writeFileSync(file, buf);
-  },
-  capitalize(s) {
-    return s.charAt(0).toUpperCase() + s.slice(1);
-  },
-  encode64(string) {
-    const encodedWord = CryptoJS.enc.Utf8.parse(string);
-    const encoded = CryptoJS.enc.Base64.stringify(encodedWord);
-    return encoded;
-  },
-  decode64(string) {
-    const encodedWord = CryptoJS.enc.Base64.parse(string);
-    const decoded = CryptoJS.enc.Utf8.stringify(encodedWord);
-    return decoded;
-  },
 
   Paginator(message, embeds, footer) {
     if (!message.interaction) {

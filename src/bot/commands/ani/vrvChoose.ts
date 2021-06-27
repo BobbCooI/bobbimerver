@@ -105,7 +105,7 @@ console.log(choice.res, typeof choice.res)
       end += 20;
       embeds.push(emb);
     }
-    if (embeds.length === 1) return embeds[0];
+   // if (embeds.length === 1) return embeds[0];
     const Ret = new Bobb!.Return("interaction")
 Ret.setEmbeds(embeds);//.Paginator(message, `Selection could be "c!vrvGetEp <${choice.res[1].split(' ')[0]} | ${choice.res[1].split(' ')[0].slice(0, -2)}> to get the second episode.`);
  return Ret;

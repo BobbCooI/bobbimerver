@@ -1,9 +1,6 @@
 import Bobb from '../bot/botClass';
-import { Guild } from 'discord.js';
 import { commandAttr } from '../types/bot';
 import {iUser} from '../db/models/Person';
-import { iStats } from '../db/models/Stats';
-import {iGuild } from '../db/models/Guild';
 export default (Bobb: Bobb) => ({
   async fetchMemberInfo(search:any): Promise<iUser> {
     return Bobb.mongo.Person.findOne(search).catch((e:any) => Bobb.loggers.log(e.stack.length<1990?e.stack:e.message + "function: fetchMemberInfo", "error"))
@@ -16,23 +13,7 @@ return ok
    async updateBal(memberID:string, amt:number): Promise<iUser> {
    return this.updateMember({discID: memberID}, {$inc: {balance: amt}}).catch((e:any) => Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: updateBal->updateMember->findOneAndUpdate Person", "error"));
   },
- async createGuild(guild:Guild): Promise<iStats> {
-    await Bobb.mongo.Guild.create({
-      guild: guild.name,
-      guildID: guild.id
-    });
-    return Bobb.botStats.findOneAndUpdate({_id: "60070be0f12d9e041931de68"}, {$inc: {guildsJoined: 1}}, {new: true}).catch((e:any)=> Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: createGuild->findOneAndUpdate Stats", "error"));
-
-  },
-  async deleteGuild(guild: Guild): Promise<iStats> {
-    await Bobb.mongo.Guild.findOneAndDelete(
-      { guildID: guild.id }).catch((e:any)=> Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: deleteGuild->findOneAndDelete guild", "error"));
-     return Bobb.botStats.findOneAndUpdate({_id: "60070be0f12d9e041931de68"}, {$inc: {guildsLeft: 1}}, {new: true}).catch((e:any)=> Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: deleteGuild->findOneAndUpdate Stats", "error"));
-
-  },
- async getGuild(id: string, update: any):Promise<iGuild> {
-  return id && !update? Bobb.mongo.Guild.findOne({guildID: id}).catch((e:any) => console.log(e)): Bobb.mongo.Guild.findOneAndUpdate({guildID: id}, update, {new: true}).catch((e:any) => Bobb.loggers.log(e.stack.length < 1990?e.stack:e.message + "function: getGuild->findOne", "error"));
-  },
+ 
  async updateCooldowns(command: string, userID: string): Promise<any> {
     const pCommand = Bobb.cmds.find(c =>
       c.props.triggers.includes(command.toLowerCase())

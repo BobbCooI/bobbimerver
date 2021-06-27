@@ -18,6 +18,8 @@ import * as utils from "../utils/utils";
 import * as constants from "../utils/constants";
 import { Return } from "../types/bot";
 import ipc from '../IPC';
+import StatsD from 'hot-shots';
+      
 export class extClient extends Discord.Client {
   crCache: any;
   vrvCache: any;
@@ -49,6 +51,7 @@ export default class Bobb {
   misc: any;
   utils: any;
   constants: any;
+  stats: any;
   cooldowns: any;
   mentionRX: RegExp;
   messageCollector: any;
@@ -68,12 +71,19 @@ export default class Bobb {
     this.botStats = Stats;
     this.config = config;
     this.VRV = new VRV(this, {lang: "enUS", debug: true, premium: true})
-this.Funi = Funi;
+    this.Funi = Funi;
     this.loggers = loggers(this);
     //  this.helpers = require('./utils/dbFunctions.js')(this);
     this.misc = misc(this);
     this.utils = utils;
     this.constants = constants;
+    this.stats = new StatsD({
+          port: 8020,
+          globalTags: ["anime", "misc", "web"],
+          errorHandler: function(error) {
+            console.log("Stats error: " + error);
+          }
+      });
     this.cooldowns = new Map();
     this.Return = Return;
   }
@@ -103,7 +113,7 @@ this.Funi = Funi;
     );
 
     await client.user!.setActivity(
-      `typescript 😍`,
+      `bro`,
       { type: "WATCHING" }
     );
    this.mentionRX = /<@!*747231069002006609>/g;

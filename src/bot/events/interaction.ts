@@ -8,6 +8,12 @@ import _ from 'lodash';
 exports.handle = async function(interaction:CommandInteraction|ButtonInteraction): Promise<any> {
   		await interaction.defer();
 //console.log("interaction", interaction, interaction.isMessageComponent(), interaction.isButton(), interaction.isCommand())
+if(interaction.isButton()) {
+  if(interaction.customID === "pong") {
+   await interaction.editReply(`u be roll a ${Math.floor(Math.random() * 6) + 1}`);
+  }
+}
+
 if(interaction.isCommand()) {
   console.log(interaction.options, Object.keys(interaction))
 	let {commandName} = interaction;
@@ -107,16 +113,16 @@ async function checkCooldowns(this: Bobb, interaction: CommandInteraction|Button
 			`**time left until you can run this command again:** `;
 
 		const cooldownMessage = new MessageEmbed()
-				.setColor(this.misc.randomColor())
+				.setColor(this.utils.randomColor())
 				.setTitle('chill 😩')
 				.setDescription(
 					cooldownWarning +
 					(waitTime > 60
-						? `__${this.misc.parseTime(waitTime)}__`
+						? `__${this.utils.parseTime(waitTime)}__`
 						: `__${waitTime.toFixed()} seconds__`) +
-					`\n\n**default cooldown**: ${this.misc.parseTime(
+					`\n\n**default cooldown**: ${this.utils.parseTime(
 						command.props.cooldown / 1000
-					)}\n**[donor]() cooldown**: ${this.misc.parseTime(
+					)}\n**[donor]() cooldown**: ${this.utils.parseTime(
 						command.props.cooldown / 1000
 					)}\n\nok!`);
 

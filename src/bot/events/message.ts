@@ -40,8 +40,9 @@ exports.handle = async function(message: Message): Promise<Message|undefined|nul
   // if (!passed || await this.db.checkBlocked(msg.author.id, msg.channel.guild.id)) { return; }   BLACKLISTED?
   const guildID = message.guild ? message.guild.id : false;
   const gConfig = guildID
-    ? await this.db.getGuild(guildID)
+    ? await this.mongo.Guild.getGuild(guildID)
     :  { prefix: process.env.prefix }; // this method takes like 500-1000 milliseconds.
+console.log(gConfig)
 gConfig.prefix = this.client.prefix;
  gConfig.disabledCategories = gConfig.disabledCategories
     ? gConfig.disabledCategories
@@ -197,7 +198,7 @@ args = args.slice(1)
         embeds: [new Discord.MessageEmbed()
          .setTitle("NSFW not allowed here")
          .setDescription("Use NSFW commands in a NSFW marked channel (look in channel settings, dummy)")
-         .setColor(this.misc.randomColor())
+         .setColor(this.utils.randomColor())
          .setImage(gifs.nsfw)
         ]
       });
@@ -267,15 +268,15 @@ async function checkCooldowns(this:Bobb,message:Message, command: GenericCommand
       `__Time left until you can run this command again:__ `;
 
     const cooldownMessage = new Discord.MessageEmbed()
-    .setColor(this.misc.randomColor())
+    .setColor(this.utils.randomColor())
     .setTitle("hold on 😩")
     .setDescription(cooldownWarning +
           (waitTime > 60
-            ? `**${this.misc.parseTime(waitTime)}**`
+            ? `**${this.utils.parseTime(waitTime)}**`
             : `**${waitTime.toFixed()} second${parseInt(waitTime.toFixed())>1?"s":""}**`) +
-          `\n\n**Default Cooldown**: ${this.misc.parseTime(
+          `\n\n**Default Cooldown**: ${this.utils.parseTime(
             command.props.cooldown / 1000
-          )}\n**[Donor]() Cooldown**: ${this.misc.parseTime(
+          )}\n**[Donor]() Cooldown**: ${this.utils.parseTime(
             command.props.cooldown / 1000
           )}\n\ntoo fast yo`
       );
@@ -299,7 +300,7 @@ function checkPerms(this:Bobb,command:GenericCommand, permissions:any, message:M
         .setDescription(`You need to add **${
             neededPerms.length > 1 ? neededPerms.join(", ") : neededPerms
           }** to use this command!\nGo to **Server settings => Roles => asuna-kun** to change this!`)
-        .setColor(this.misc.randomColor())
+        .setColor(this.utils.randomColor())
         .setImage(
             neededPerms.length === 1
               ? gifs[neededPerms[0] as string]
@@ -355,9 +356,9 @@ this:Bobb,
       return message.channel.send(`<@${message.author.id}>, ${res.content}`);
     }
     delete res["color"]
-    res = Object.assign({ color: this.misc.randomColor() }, res);
+    res = Object.assign({ color: this.utils.randomColor() }, res);
     if (!permissions.has("EMBED_LINKS")) {
-      res = this.misc.unembedify({
+      res = this.utils.unembedify({
         content: res.content,
         file: res.file,
         embed: res

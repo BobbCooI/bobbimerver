@@ -45,7 +45,7 @@ export default new GenericCommand(
         .setFooter(
           `Requested by ${
             message!.author.tag
-          } | Time taken: ${Bobb!.misc.timeMili(epFromId.epMedia[ep]!.timeTaken)}`
+          } | Time taken: ${Bobb!.utils.timeMili(epFromId.epMedia[ep]!.timeTaken)}`
         );
       person.latest = emb;
       mediaEmbeds.push(emb);
@@ -53,10 +53,10 @@ export default new GenericCommand(
 
     epFromId.message
       ? await epFromId.message.edit(
-          `Finished! Total time taken: ${Bobb!.misc.timeMili(Date.now() - st)}`
+          `Finished! Total time taken: ${Bobb!.utils.timeMili(Date.now() - st)}`
         )
       : await initial.edit(
-          `Finished! Total time taken: ${Bobb!.misc.timeMili(Date.now() - st)}`
+          `Finished! Total time taken: ${Bobb!.utils.timeMili(Date.now() - st)}`
         );
         Bobb!.VRV.setCacheEmbed(message!.author.id, mediaEmbeds[0])
     const Ret = new Bobb!.Return("message", {Paginate: true});

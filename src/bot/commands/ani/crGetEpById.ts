@@ -61,7 +61,7 @@ export default new GenericCommand(
           .setFooter(
             `Requested by ${
               message!.author.tag
-            } | Time taken: ${Bobb!.misc.timeMili(
+            } | Time taken: ${Bobb!.utils.timeMili(
               epFromId.res.epMedia[ep].tTime
             )}`
           );
@@ -71,7 +71,7 @@ export default new GenericCommand(
     }
 
     await epFromId.message.edit(
-      `Finished! Time taken: ${Bobb!.misc.timeMili(Date.now() - st)}`
+      `Finished! Time taken: ${Bobb!.utils.timeMili(Date.now() - st)}`
     );
     const Ret = new Bobb!.Return("message", {Paginate: true});
     Ret
@@ -80,7 +80,7 @@ export default new GenericCommand(
       return Ret;
     /*  return {
   title: `Episodes chosen: ${epFromId.selData.eps}`,
-  description: Bobb.misc.chunkSubstr(epFromId, 1940)
+  description: Bobb.utils.chunkSubstr(epFromId, 1940)
   }*/
   },
   async ({ Bobb, interaction, argslash, addCD }: runFnArgs) => {
@@ -121,7 +121,7 @@ export default new GenericCommand(
           .setFooter(
             `Requested by ${interaction!.user.username}#${
               interaction!.user.discriminator
-            } | Time taken{ ${Bobb!.misc.timeMili(
+            } | Time taken{ ${Bobb!.utils.timeMili(
               epFromId.res.epMedia[ep].tTime
             )}`
           );
@@ -134,7 +134,7 @@ export default new GenericCommand(
       Ret
         .setEmbeds(embeds)
         .setContent(
-          `Done! Total time taken: ${Bobb!.misc.timeMili(Date.now() - st)}`
+          `Done! Total time taken: ${Bobb!.utils.timeMili(Date.now() - st)}`
         );
         return Ret;
     }

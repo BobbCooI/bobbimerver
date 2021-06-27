@@ -50,7 +50,7 @@ let st = Date.now();
         .setTimestamp()
         .setFooter(`Requested by ${message!.author.tag}`);
       await epFromUrl.message.edit(
-        `Finished! Time taken: ${Bobb!.misc.timeMili(Date.now() - st)}`
+        `Finished! Time taken: ${Bobb!.utils.timeMili(Date.now() - st)}`
       );
 
       const Ret =new Bobb!.Return("message")
@@ -84,7 +84,7 @@ let st = Date.now();
         .setFooter(
           `Requested by ${
             interaction!.user.username
-          }#${interaction!.user.discriminator} | Time taken: ${Bobb!.misc.timeMili(Date.now() - st)}`
+          }#${interaction!.user.discriminator} | Time taken: ${Bobb!.utils.timeMili(Date.now() - st)}`
         );
       person.latest = emb;
       const Ret =  new Bobb!.Return("interaction")

@@ -50,7 +50,7 @@ export default new GenericCommand(
             .setFooter(
               `Requested by ${
                 message!.author.tag
-              } | Time taken: ${Bobb!.misc.timeMili(
+              } | Time taken: ${Bobb!.utils.timeMili(
                 epFromId.res.epMedia[ep].tTime
               )}`
             );
@@ -81,7 +81,7 @@ export default new GenericCommand(
             .setFooter(
               `Requested by ${
                 message!.author.tag
-              } | Time taken: ${Bobb!.misc.timeMili(
+              } | Time taken: ${Bobb!.utils.timeMili(
                 epFromId.res.epMedia[ep].tTime
               )}`
             );
@@ -91,7 +91,7 @@ export default new GenericCommand(
     }
 
     await epFromId.message.edit(
-      `Finished! Total time taken: ${Bobb!.misc.timeMili(Date.now() - st)}`
+      `Finished! Total time taken: ${Bobb!.utils.timeMili(Date.now() - st)}`
     );
     const Ret = new Bobb!.Return("message", { Paginate: true });
     Ret.setEmbeds(streambeds).Paginator(message!, "Streams");
@@ -129,7 +129,7 @@ export default new GenericCommand(
             .setFooter(
               `Requested by ${
                 interaction!.user.tag
-              } | Time taken: ${Bobb!.misc.timeMili(
+              } | Time taken: ${Bobb!.utils.timeMili(
                 epFromId.res.epMedia[ep].tTime
               )}`
             );
@@ -160,7 +160,7 @@ export default new GenericCommand(
             .setFooter(
               `Requested by ${
                 interaction!.user.tag
-              } | Time taken: ${Bobb!.misc.timeMili(
+              } | Time taken: ${Bobb!.utils.timeMili(
                 epFromId.res.epMedia[ep].tTime
               )}`
             );
@@ -171,7 +171,7 @@ export default new GenericCommand(
     person.latest = streambeds[streambeds.length - 1];
     const Ret = new Bobb!.Return("interaction");
     Ret.setEmbeds(streambeds).setContent(
-      `Done! Total time taken: ${Bobb!.misc.timeMili(Date.now() - st)}`
+      `Done! Total time taken: ${Bobb!.utils.timeMili(Date.now() - st)}`
     );
     return Ret;
   }

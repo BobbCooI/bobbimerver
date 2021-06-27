@@ -47,7 +47,7 @@ export default new GenericCommand(
         .setTitle("Choices")
         .setDescription(search.res.join("\n"))
         .setFooter(
-          `Time taken: ${Bobb!.misc.timeMili(
+          `Time taken: ${Bobb!.utils.timeMili(
             end - startTime
           )} - You can choose like this: ${prefix}vrvChoose 1st`
         )
@@ -79,7 +79,7 @@ export default new GenericCommand(
         .setTitle("Choices")
         .setDescription(search.res.join("\n"))
         .setFooter(
-          `Time taken: ${Bobb!.misc.timeMili(
+          `Time taken: ${Bobb!.utils.timeMili(
             end - startTime
           )} - You can choose like this: /vrvChoose 1`
         )

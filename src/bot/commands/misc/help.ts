@@ -33,7 +33,7 @@ export default new GenericCommand(
         return "I could not find that command. Try running the `help` command by itself and see a list of commands.";
       const embed = new Discord.MessageEmbed()
         .setTitle(
-          `Information on ${Bobb!.misc.capitalize(command.props.triggers[0])}`
+          `Information on ${Bobb!.utils.capitalize(command.props.triggers[0])}`
         )
         .setDescription(`Triggers: ${command.props.triggers.join(" | ")}`)
         .addField("Usage: ", `${command.props.usage}`, true)
@@ -68,7 +68,7 @@ export default new GenericCommand(
         return "I could not find that command. Try running the `help` command by itself and see a list of commands.";
       const embed = new Discord.MessageEmbed()
         .setTitle(
-          `Information on ${Bobb!.misc.capitalize(command.props.triggers[0])}`
+          `Information on ${Bobb!.utils.capitalize(command.props.triggers[0])}`
         )
         .setDescription(`Triggers: ${command.props.triggers.join(" | ")}`)
         .addField("Usage: ", `${command.props.usage}`, true)

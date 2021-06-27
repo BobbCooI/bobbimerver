@@ -21,7 +21,7 @@ ret
     new MessageButton({type: 2,
     label: "lol",
     style:"PRIMARY",
-    customID: "lolbut"
+    customID: "pong"
     })
     ]);
 return ret;

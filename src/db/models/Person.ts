@@ -50,11 +50,11 @@ export interface iUser {
   cmdSpam?: number;
 }
 
-export interface iUserModel extends iUser, Document {
+export interface iUserMethods extends iUser, Document {
   comparePassword(password: string): Promise<any>;
 }
 
-const userSchema: Schema<iUserModel> = new Schema({
+const userSchema: Schema<iUserMethods> = new Schema({
  // Website
   username: { type: String },
   loweruser: { type: String },
@@ -79,7 +79,7 @@ const userSchema: Schema<iUserModel> = new Schema({
   cmdsRan: { type: Number },
   lastCmd: { type: Date }
 });
-userSchema.pre<iUserModel>("save", function(next: any) {
+userSchema.pre<iUserMethods>("save", function(next: any) {
   var user = this;
 
   // only hash the password if it has been modified (or is new)
@@ -109,4 +109,4 @@ userSchema.methods.comparePassword = async function(
   return bcrypt.compare(password, this.hPassword);
 };
 
-export default model<iUserModel>("user", userSchema);
+export default model<iUserMethods>("user", userSchema);
