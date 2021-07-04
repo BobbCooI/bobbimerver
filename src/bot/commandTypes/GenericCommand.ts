@@ -19,7 +19,7 @@ export default class GenericCommand {
     if (this.fnSlash || (this.props.slashCmd || this.props.slashOpts)) this.fnSlash = new SlashCommand(this.props, fnSlash);
   }
   // set this to an attr in a generic command ig
-  async run({ Bobb, message, args, addCD }: runFnArgs) {
+  async run({ Bobb, message, argManager, addCD }: runFnArgs) {
     /*  if (this.props.missingArgs && !args[0]) {
       return this.props.missingArgs;
     }
@@ -29,7 +29,7 @@ export default class GenericCommand {
 
     // Here can be middleware code such as args length checking ex. above ^
 
-    return this.fn({ Bobb, message, args, addCD });
+    return this.fn({ Bobb, message, argManager, addCD });
   }
   get props() {
     return Object.assign(

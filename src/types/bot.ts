@@ -1,6 +1,7 @@
 import {Collection, Message, MessageEmbed, MessageReaction, User, MessageActionRow, MessageButton, CommandInteraction, CommandInteractionOption} from 'discord.js';
 import Bobb from '../bot/botClass';
 import _ from 'lodash';
+import ArgManager from "../utils/argsManager";
 export interface commandAttr {
   triggers: Array<string>;
   usage: string;
@@ -26,6 +27,7 @@ export interface commandAttr {
   cooldown?: number;
   category?:string;
   perms?:any;
+  ownerOnly?: boolean;
 }
   
   export interface runFnArgs {
@@ -33,7 +35,7 @@ export interface commandAttr {
     message?: Message;
     interaction?: CommandInteraction;
     argslash?: Collection <string , CommandInteractionOption>;
-    args?: Array<string>;
+    argManager?: ArgManager;
     addCD?: any;
   }
 /*export interface runFnMessageArgs extends runFnArgs {

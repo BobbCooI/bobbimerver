@@ -24,14 +24,14 @@ export default new GenericCommand(
     },
     cooldown: 10 * 1000
   },
-  async ({ Bobb, message, addCD, args }: runFnArgs) => {
-      if(!args ?? !(args as Array<string>).length) return `give me an episode from them choices 🙄`
+  async ({ Bobb, message, addCD, argManager }: runFnArgs) => {
+      if(!argManager ?? !(argManager!.args as Array<string>).length) return `give me an episode from them choices 🙄`
     let st = Date.now();
     let person = Bobb!.VRV.cache[message!.author.id];
     if (!person) return `Please start by choosing an anime with the command \`${prefix}vrvSearch <term(s)>\``;
     addCD();
     let initial = await message!.channel.send("Getting stream..");
-    let epFromId = await Bobb!.VRV.getStream(args!.join("").toString(), initial, message!.author.id);
+    let epFromId = await Bobb!.VRV.getStream(argManager!.args!.join("").toString(), initial, message!.author.id);
     if (epFromId!.success === false) return `${epFromId.error!}`;
     let mediaEmbeds: Array<Discord.MessageEmbed> = [];
     for (let ep in epFromId.epMedia!) {

@@ -4,6 +4,7 @@ import Discord, {Message, GuildChannel, Permissions, TextChannel} from "discord.
 import {AUTORESPONSE_MATRIX, SWEARWORDS, gifs} from '../../utils/constants';
 import  GenericCommand from '../commandTypes/GenericCommand';
 import Bobb from '../botClass';
+import ArgManager from '../../utils/argsManager';
 import _ from 'lodash';
 exports.handle = async function(message: Message): Promise<Message|undefined|null|void> {
  let st = Date.now();
@@ -110,9 +111,10 @@ gConfig.prefix = this.client.prefix;
     return;
   }
 
-  let args: string[] = message.content.slice(triggerLength).split(/ +/g);
-  let command: any = args[0];
-args = args.slice(1)
+  let cleanArgs: string[] = message.content.slice(triggerLength).split(/ +/g);
+  let command: any = cleanArgs[0];
+cleanArgs = cleanArgs.slice(1)
+const argManager = new ArgManager(message, cleanArgs);
 /*const cleanArgs = message.cleanContent
     .slice(cleanTriggerLength)
     .split(/ +/g)
@@ -180,7 +182,6 @@ args = args.slice(1)
   }
   const updateCooldowns = () =>
     this.db.updateCooldowns(command.props.triggers[0], message.author.id);
-
   try {
     let permissions:any = new Permissions().add([Permissions.FLAGS.SEND_MESSAGES]);
     if (message.guild) {
@@ -209,14 +210,15 @@ args = args.slice(1)
         this,
         command,
         message,
-        args,
+        argManager,
         updateCooldowns,
-        permissions
+        permissions,
+        
       );
     }
     console.log(`Command ${command.props.triggers[0]} took: ${Date.now() - st}ms to run.`)
   } catch (e) {
-    this.loggers.reportError.call(this, e, message, command, args);
+    this.loggers.reportError.call(this, e, message, command, cleanArgs);
   }
 };
 
@@ -257,6 +259,8 @@ async function updateStats(this: Bobb, message:Message, command: GenericCommand,
   });
 }
 async function checkCooldowns(this:Bobb,message:Message, command: GenericCommand) {
+  const person = await this.mongo.Person.findOne({discID: message.author.id});
+  if(person?.bypassCooldown) return false;
   const cooldown = await this.db.getSpecificCooldown(
     command.props,
     message.author.id
@@ -321,14 +325,14 @@ async function runCommand(
 this:Bobb,
   command: GenericCommand,
   message: Message,
-  args: string[],
+  argManager: ArgManager,
   updateCooldowns: any,
-  _permissions: any
+  _permissions: any,
 ) {
   //  this.botStats.commands++;
   let res = await command.run({
     message,
-    args,
+    argManager,
     Bobb: this,
     addCD: updateCooldowns
   });

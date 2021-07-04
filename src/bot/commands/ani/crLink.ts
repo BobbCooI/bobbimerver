@@ -23,8 +23,8 @@ export default new GenericCommand(
     },
     cooldown: 5*1000
   },
-  async ({ Bobb, message, addCD, args }: runFnArgs) => {
-        if(!args ?? !((args as Array<string>).length)) return `pick something to choose 🙄`;
+  async ({ Bobb, message, addCD, argManager }: runFnArgs) => {
+        if(!argManager?? !((argManager!.args as Array<string>).length)) return `pick something to choose 🙄`;
 
 let st = Date.now();
     addCD();
@@ -36,7 +36,7 @@ let st = Date.now();
       );
        await person.login();
     }
-    let epFromUrl = await person.getEpByUrl((args as string[])[0], message);
+    let epFromUrl = await person.getEpByUrl((argManager!.args as string[])[0], message);
 
     if (epFromUrl!.success === false) return `Error! ${epFromUrl.error}`;
     else {

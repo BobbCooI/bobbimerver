@@ -97,7 +97,7 @@ function jwtSignUser(user: jwtUserSign) {
         });
       const isPassCorrect = await user
         .comparePassword(password as string)
-        .catch(e => console.log(e));
+        .catch((e: any) => console.log("comp password authcontrol error", e));
       if (!isPassCorrect) {
         return res.send({
           success: false,

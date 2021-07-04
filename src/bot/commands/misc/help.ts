@@ -23,11 +23,11 @@ export default new GenericCommand(
     },
     cooldown: 3000
   },
-  async ({ Bobb, args, addCD }: runFnArgs) => {
+  async ({ Bobb, argManager, addCD }: runFnArgs) => {
     addCD();
-    if (args?.[0]) {
+    if (argManager!.args?.[0]) {
       let command = Bobb!.cmds.find((c: GenericCommand) =>
-        c.props.triggers.includes(args?.[0]?.toLowerCase())
+        c.props.triggers.includes(argManager!.args?.[0]?.toLowerCase())
       );
       if (!command)
         return "I could not find that command. Try running the `help` command by itself and see a list of commands.";

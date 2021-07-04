@@ -23,11 +23,11 @@ export default new GenericCommand(
     },
     cooldown: 5 * 1000
   },
-  async ({ Bobb, message, addCD, args }: runFnArgs) => {
+  async ({ Bobb, message, addCD, argManager }: runFnArgs) => {
     let person = Bobb!.client.crCache[message!.author.id];
     if (!person)
       return `Please start by choosing an anime with the command \`${prefix}crSearch <term(s)>\``;
-    let choice = person.choose((args as string[])[0]);
+    let choice = person.choose((argManager!.args as string[])[0]);
 
     if (choice.success === false) return `Error: ${choice.error}`;
     addCD();

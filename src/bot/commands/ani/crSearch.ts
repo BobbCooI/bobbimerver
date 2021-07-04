@@ -23,7 +23,7 @@ export default new GenericCommand(
     },
     cooldown: 8 * 1000
   },
-  async ({ Bobb, message, addCD, args }: runFnArgs) => {
+  async ({ Bobb, message, addCD, argManager }: runFnArgs) => {
     addCD()
     if (Bobb!.client.crCache[message!.author.id])
       delete Bobb!.client.crCache[message!.author.id];
@@ -34,7 +34,7 @@ export default new GenericCommand(
     ));
     await base.login();
 
-    let search = await base.search(args);
+    let search = await base.search(argManager!.args);
     let en = Date.now();
     if (search!.success === false) return search.error;
     else

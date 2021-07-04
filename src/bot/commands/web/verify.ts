@@ -10,10 +10,10 @@ export default new GenericCommand(
     dmOnly: true,
     cooldown: 4500
   },
-  async ({ Bobb, message, args, addCD }: runFnArgs) => {
-    if(!args || !args.length || args.length === 0) return `give me your UUID from your profile on <website soon>!`
+  async ({ Bobb, message, argManager, addCD }: runFnArgs) => {
+    if(!argManager!.args || !argManager!.args.length || argManager!.args.length === 0) return `give me your UUID from your profile on <website soon>!`
     addCD();
-    let pos = await Bobb!.mongo.Person.findOne({ UUID: args[0] });
+    let pos = await Bobb!.mongo.Person.findOne({ UUID: argManager!.args[0] });
 
     let upd = {
       discID: message!.author.id,
@@ -22,7 +22,7 @@ export default new GenericCommand(
     };
     if (pos) {
       if (pos.discTag) return `You have already linked your Discord account.`;
-      await Bobb!.db.updateMember({ UUID: args[0] }, upd);
+      await Bobb!.db.updateMember({ UUID: argManager!.args[0] }, upd);
       return `Verification successful. Thank you for linking!`;
     } else {
       return `Verification unsuccessful. Please find your UUID by going to the Website > Account > Discord`;

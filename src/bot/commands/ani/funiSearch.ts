@@ -23,7 +23,7 @@ export default new GenericCommand(
     },
     cooldown: 8 * 1000
   },
-  async ({ Bobb, message, args , addCD}: runFnArgs) => {
+  async ({ Bobb, message, argManager , addCD}: runFnArgs) => {
     if (Bobb!.client.funiCache[message!.author.id])
       delete Bobb!.client.funiCache[message!.author.id];
     let startTime = new Date().getTime();
@@ -34,7 +34,7 @@ export default new GenericCommand(
     ));
     //  let auth = await base.login();
 
-    let search = await base.search(args);
+    let search = await base.search(argManager!.args);
     let en = new Date().getTime();
     if (search.success === false) return search.error;
     else {

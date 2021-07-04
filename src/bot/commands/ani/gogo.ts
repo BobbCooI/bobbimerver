@@ -21,9 +21,9 @@ export default new GenericCommand(
     },
     cooldown: 8 * 1000
   },
-  async ({Bobb,  args , addCD}: runFnArgs) => {
+  async ({Bobb,  argManager , addCD}: runFnArgs) => {
  try {
-    let mainURL = await getGogo(args?.[0] || '');
+    let mainURL = await getGogo(argManager!.args?.[0] || '');
     if(mainURL) {
       addCD();
       return Bobb!.utils.decode64(mainURL.link);

@@ -24,12 +24,12 @@ export default new GenericCommand(
     },
     cooldown: 5 * 1000
   },
-  async ({ Bobb, message, addCD, args }: runFnArgs) => {
-        if(!args ?? !((args as Array<string>).length)) return `pick something to choose 🙄`
+  async ({ Bobb, message, addCD, argManager }: runFnArgs) => {
+        if(!argManager ?? !((argManager!.args as Array<string>).length)) return `pick something to choose 🙄`
     let person = Bobb!.VRV.cache[message!.author.id];
     if (!person)
       return `Please start by choosing an anime with the command \`${prefix}vrvSearch <term(s)>\``;
-    let choice = await Bobb!.VRV.choose((args as string[])[0], message!.author.id);
+    let choice = await Bobb!.VRV.choose((argManager!.args as string[])[0], message!.author.id);
 
     if (choice.success === false) return `Error: ${choice.error}`;
     addCD();

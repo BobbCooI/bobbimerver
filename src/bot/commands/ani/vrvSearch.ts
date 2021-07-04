@@ -23,8 +23,8 @@ export default new GenericCommand(
     },
     cooldown: 8 * 1000
   },
-  async ({ Bobb, message, addCD, args }: runFnArgs) => {
-  if(!(args as Array<string>).length) return `atleast give me something to search up 🙄`
+  async ({ Bobb, message, addCD, argManager }: runFnArgs) => {
+  if(!(argManager!.args as Array<string>).length) return `atleast give me something to search up 🙄`
     addCD();
         let startTime = Date.now();
 /*let base =Bobb!.client.vrvCache[message!.author.id];
@@ -38,7 +38,7 @@ export default new GenericCommand(
     if (!auth!.success) return `Oh no! ${auth.error}`;
     }  */
     Bobb!.VRV.initPerson(message!.author.id);
-    let search = await Bobb!.VRV.search((args as string[])!.join(" "), message!.author.id);
+    let search = await Bobb!.VRV.search((argManager!.args as string[])!.join(" "), message!.author.id);
     let end = Date.now();
     if (search.success === false) return search.error;
     const Ret =  new Bobb!.Return("message")

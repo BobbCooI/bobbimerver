@@ -24,12 +24,12 @@ export default new GenericCommand(
     },
     cooldown: 5 * 1000
   },
-  async ({ Bobb, message, args , addCD}: runFnArgs) => {
-    if(!args ?? !((args as Array<string>).length)) return `pick something to choose 🙄`
+  async ({ Bobb, message, argManager , addCD}: runFnArgs) => {
+    if(!argManager ?? !((argManager!.args as Array<string>).length)) return `pick something to choose 🙄`
     let person = Bobb!.client.funiCache[message!.author.id];
     if (!person)
       return `Please start by choosing an anime with the command \`${prefix}funiSearch <term(s)>\``;
-    let choice = person.choose((args as string[])[0]);
+    let choice = person.choose((argManager!.args as string[])[0]);
 
     if (choice!.success === false) return `Error: ${choice.error}`;
   addCD();

@@ -23,13 +23,13 @@ export default new GenericCommand(
     },
     cooldown: 10 * 1000
   },
-  async ({ Bobb, message, args, addCD }: runFnArgs) => {
+  async ({ Bobb, message, argManager, addCD }: runFnArgs) => {
     const st = Date.now();
     let person = Bobb!.client.funiCache[message!.author.id];
-    if (!args)
+    if (!argManager!.args)
       return `Please start by choosing an anime with the command \`${prefix}funiSearch <term(s)>\``;
     addCD();
-    let epFromId = await person.getEp(args.join("").toString(), message);
+    let epFromId = await person.getEp(argManager!.args?.join("").toString(), message);
     let streambeds: Array<Discord.MessageEmbed> = [];
     if (epFromId.success === false) return `${epFromId.error}`;
     else {

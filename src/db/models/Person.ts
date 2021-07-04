@@ -1,4 +1,4 @@
-import { model, Schema, Document } from "mongoose";
+import { model, Schema, Document, Model } from "mongoose";
 import bcrypt from "bcrypt";
 
 export interface animeWatch {
@@ -48,13 +48,16 @@ export interface iUser {
   cmdsRan?: number;
   lastCmd?: string;
   cmdSpam?: number;
+  bypassCooldown: boolean;
 }
 
 export interface iUserMethods extends iUser, Document {
   comparePassword(password: string): Promise<any>;
 }
-
-const userSchema: Schema<iUserMethods> = new Schema({
+export interface iUserModel extends Model<iUser> {
+  toggleBypassCD(user: String): Promise<boolean>;
+}
+const userSchema: Schema<iUserMethods|iUserModel> = new Schema({
  // Website
   username: { type: String },
   loweruser: { type: String },
@@ -77,7 +80,8 @@ const userSchema: Schema<iUserMethods> = new Schema({
   discID: { type: String },
   cmdSpam: { type: Number },
   cmdsRan: { type: Number },
-  lastCmd: { type: Date }
+  lastCmd: { type: Date },
+  bypassCooldown: { type: Boolean, default: false }
 });
 userSchema.pre<iUserMethods>("save", function(next: any) {
   var user = this;
@@ -108,5 +112,10 @@ userSchema.methods.comparePassword = async function(
 ): Promise<any> {
   return bcrypt.compare(password, this.hPassword);
 };
-
+userSchema.statics.toggleBypassCD = async function(user: string): Promise<boolean> {
+  const getPerson = await this.findOne({discid: user});
+if(!getPerson) return false;
+else await this.updateOne({discid: user}, {$set: {bypassCooldown: !getPerson.bypassCooldown}});
+return true;
+}
 export default model<iUserMethods>("user", userSchema);

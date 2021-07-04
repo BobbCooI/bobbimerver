@@ -23,7 +23,7 @@ export default new GenericCommand(
     },
     cooldown: 10 * 1000
   },
-  async ({ Bobb, message, args , addCD }: runFnArgs) => {
+  async ({ Bobb, message, argManager , addCD }: runFnArgs) => {
     const st = Date.now();
     let person = Bobb!.client.crCache[message!.author.id];
     if (!person)
@@ -31,7 +31,7 @@ export default new GenericCommand(
     addCD();
     let epFromId = await person.getShowById(
       person.choiceId,
-      args!.join("").toString(),
+      argManager!.args?.join("").toString(),
       message
     );
     let streambeds: Array<Discord.MessageEmbed> = [];
