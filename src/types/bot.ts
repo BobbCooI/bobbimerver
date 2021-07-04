@@ -80,7 +80,7 @@ setContent(cont: string) {
    setComponents(comps: Array<MessageButton>) {
    // pretty much middleware
      if(!this.components) this.components = [
-      new MessageActionRow({ type: 1 })
+      new MessageActionRow()
     ]
      this.components[0]!.addComponents(comps);
      return this;
@@ -103,7 +103,8 @@ setContent(cont: string) {
         const filter = (reaction: MessageReaction, user: User) =>
           ["⏪", "◀️", "▶️", "⏩"].includes(reaction.emoji.name!) &&
           user.id === person.id;
-        const collector = message.createReactionCollector(filter, {
+        const collector = message.createReactionCollector({
+          filter,
           time: 10000000
         });
         collector.on("collect", (reaction: MessageReaction) => {
