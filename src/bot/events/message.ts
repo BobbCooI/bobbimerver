@@ -42,7 +42,7 @@ exports.handle = async function(message: Message): Promise<Message|undefined|nul
   const guildID = message.guild ? message.guild.id : false;
   const gConfig = guildID
     ? await this.mongo.Guild.getGuild(guildID)
-    :  { prefix: process.env.prefix }; // this method takes like 500-1000 milliseconds.
+    :  { prefix: this.config.prefix }; // this method takes like 500-1000 milliseconds.
 console.log(gConfig)
 gConfig.prefix = this.client.prefix;
  gConfig.disabledCategories = gConfig.disabledCategories

@@ -1,11 +1,11 @@
 import express, {Request, Response} from "express";
 const router = express.Router();
 import apiKeys from "./secret";
-
+import config from "../config.json"
 router.use(
   "/",
   (req: Request, res: Response, next: any): any => {
-    const apiKey = req.get(process.env.headerAuth!);
+    const apiKey = req.get(config.headerAuth!);
     if (!apiKeys.has(apiKey)) {
       return res.send({success: false, error: "Invalid API Key."})
     }

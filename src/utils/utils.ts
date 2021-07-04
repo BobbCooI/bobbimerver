@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import Discord, { Snowflake } from "discord.js";
 import { webhook } from "../types/discord";
 import fs from 'fs';
+import config from "../config.json";
 export function ordinate(i: number): string {
   var j = i % 10,
     k = i % 100;
@@ -27,8 +28,8 @@ export async function createWebhook(opts: webhook): Promise<void> {
        ...opts
     }*/
   let webhookClient = new Discord.WebhookClient(
-    process.env.webhookURL! as Snowflake,
-    process.env.webhookToken!
+    config.webhookURL! as Snowflake,
+    config.webhookToken!
   );
   let date = Date()
     .toString()

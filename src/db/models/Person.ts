@@ -1,6 +1,6 @@
 import { model, Schema, Document, Model } from "mongoose";
 import bcrypt from "bcrypt";
-
+import config from "../../config.json"
 export interface animeWatch {
   // Anime Info
   title: string;
@@ -90,7 +90,7 @@ userSchema.pre<iUserMethods>("save", function(next: any) {
   if (!user.isModified("hPassword")) return next();
 
   // generate a salt
-  bcrypt.genSalt(parseInt(process.env.saltFactor!) || 6, function(
+  bcrypt.genSalt(parseInt(config.saltFactor!) || 6, function(
     err: any,
     salt
   ) {

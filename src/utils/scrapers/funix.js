@@ -1,5 +1,7 @@
-const api_host = process.env.funiApiHost;
-const token = process.env.funiToken;
+import config from "../../config.json"
+
+const api_host = config.funiApiHost;
+const token = config.funiToken;
 const m3u8 = require("m3u8-parsed");
 //const vttConvert = require("../vtt.js");
 import fs from "fs";
@@ -23,8 +25,8 @@ async function edit(which, content, Bobb) {
 module.exports = {
   async auth() {
     let authOpts = {};
-    authOpts.user = process.env.funiEmail;
-    authOpts.pass = process.env.funiPass;
+    authOpts.user = config.funiEmail;
+    authOpts.pass = config.funiPass;
     let authData = await getFuniData({
       baseUrl: api_host,
       url: "/auth/login/",

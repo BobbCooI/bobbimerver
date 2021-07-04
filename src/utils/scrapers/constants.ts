@@ -1,3 +1,4 @@
+import config from "../../config.json"
 const funiOptions = {
   quality: 10,
   server: 1,
@@ -9,8 +10,8 @@ const funiOptions = {
   enSub: true
 };
 const crOptions = {
-  user: process.env.crEmail,
-  pass: process.env.crPass,
+  user: config.crEmail,
+  pass: config.crPass,
   quality: "max",
   server: 1,
   suffix: "SIZEp",
@@ -27,8 +28,8 @@ const crOptions = {
   filename: "[{rel_group}] {title} - {ep_num} [{suffix}]"
 }
 const vrvOptions = {
-   email: process.env.vrvEmail,
-   password: process.env.vrvPass,
+   email: config.vrvEmail,
+   password: config.vrvPass,
    lang: "enUS",
   debug: false
  }

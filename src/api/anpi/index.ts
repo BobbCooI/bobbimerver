@@ -2,11 +2,11 @@ import express, { Request, Response } from "express";
 const router = express.Router();
 import apiKeys from "../secret";
 import {verify} from "../../utils/utils";
-
+import config from "../../config.json"
 router.use(
   "/",
   async (req: Request, res: Response, next: any) : Promise<any> => {
-    const apiKey = req.get(process.env.headerAni!);
+    const apiKey = req.get(config.headerAni!);
     const authHeader = req.get("Authorization");
     const token = authHeader && authHeader.split(" ")[1];
     if (token == null)

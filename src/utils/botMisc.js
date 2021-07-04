@@ -10,7 +10,8 @@ import Discord, {
   FetchMemberOptions
 } from "discord.js";
 import Bobb from "../bot/botClass";
-import CryptoJS from 'crypto-js'
+import CryptoJS from 'crypto-js';
+
 const errors = {
   // Voice related errors
   Disconnected: `Discord fucked something up. 😠\n\nTo fix this, you have to got to server settings and change the voice region.\nIf it still doesn't work after that, join (<https://discord.gg/Wejhbd4>) and tell support it is error \`vc1\`.`,
@@ -99,7 +100,7 @@ slashCmds.forEach(async cmd => {
   },
   async editMessage(interaction, content) {
     await Bobb.client.api
-      .webhooks(process.env.appID, interaction.token)
+      .webhooks(Bobb.config.appID, interaction.token)
       .messages("@original")
       .patch({
         data: await this.createAPIMessage(interaction, content)

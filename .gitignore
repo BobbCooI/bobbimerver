@@ -27,3 +27,4 @@ pnpm-debug.log*
 .glitch-assets
 session.yml
 dist/
+config.json

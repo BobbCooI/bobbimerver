@@ -1,11 +1,12 @@
 import axios from "axios";
 import { Request, Response } from "express";
+import config from "../../config.json"
 export async function getDevs(req: Request, res: Response) {
   const userDiscApi = axios.create({
     baseURL: `https://discord.com/api/v8/users/`,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bot ${process.env.botToken}`
+      Authorization: `Bot ${config.botToken}`
     }
   });
   let re = await Promise.all(

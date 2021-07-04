@@ -1,4 +1,5 @@
 const apiKeys = new Map();
-apiKeys.set(process.env.headerSecret!, true);
-apiKeys.set(process.env.headerAniSecret!, true);
+import config from "../config.json"
+apiKeys.set(config.headerSecret!, true);
+apiKeys.set(config.headerAniSecret!, true);
 export default apiKeys;

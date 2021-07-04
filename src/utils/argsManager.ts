@@ -106,7 +106,7 @@ export default class ArgManager {
         ret = null; // Only allow name-lookup for channels locally due to the performance impact this would have for searching lots of guilds
       } else {
         ret = (this.msg.channel as GuildChannel).guild.channels.cache.find(
-          (channel: GuildChannel) => channel.name === args && channel.type !== "category"
+          (channel: any) => channel.name === args && channel.type !== "category"
         );
       }
     }

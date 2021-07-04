@@ -1,5 +1,5 @@
 import mongoose , {ConnectOptions }from "mongoose";
-
+import config from "../config.json"
 export default {
   async connector() {
     const dbOptions: ConnectOptions = {
@@ -10,7 +10,7 @@ export default {
       connectTimeoutMS: 10000,
       family: 4
     };
-    await mongoose.connect(process.env.mongoPass!, dbOptions);
+    await mongoose.connect(config.mongoPass!, dbOptions);
     mongoose.set("useFindAndModify", false);
     mongoose.Promise = global.Promise;
     mongoose.connection.on("connected", () => {

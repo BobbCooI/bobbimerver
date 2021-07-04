@@ -19,7 +19,6 @@ import * as constants from "../utils/constants";
 import { Return } from "../types/bot";
 import ipc from '../IPC';
 import StatsD from 'hot-shots';
-      
 export class extClient extends Discord.Client {
   crCache: any;
   vrvCache: any;

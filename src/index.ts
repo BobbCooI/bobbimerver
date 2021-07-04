@@ -10,6 +10,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import Stats from "./db/models/Stats";
 import Api from './api';
+import config from "./config.json";
 import cookieParser from 'cookie-parser';
 //import Sentry from "@sentry/node";
 //import Tracing from "@sentry/tracing";
@@ -40,7 +41,7 @@ export default async function mainLaunch() {
     prefix
   });
 
-  client.login(process.env.botToken!);
+  client.login(config.botToken!);
   const Asuna = new Bobb(client);
   await Asuna.deploy();
 

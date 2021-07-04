@@ -4,6 +4,7 @@ import Stats from "../../db/models/Stats";
 import CryptoJS from "crypto-js";
 import jwt from "jsonwebtoken";
 import { Request, Response } from 'express';
+import config from "../../config.json"
 interface jwtUserSign {
   username: string;
   userID: string;
@@ -11,7 +12,7 @@ interface jwtUserSign {
 }
 function jwtSignUser(user: jwtUserSign) {
   const threeDays = 60 * 60 * 24 * 3;
-  return jwt.sign(user, process.env.jwtAccessSecret!, {
+  return jwt.sign(user,config.jwtAccessSecret!, {
     expiresIn: threeDays
   });
 };
@@ -42,7 +43,7 @@ function jwtSignUser(user: jwtUserSign) {
     let iD;
     let ePassword = CryptoJS.AES.encrypt(
       origPass as string,
-      process.env.encryptWord!
+     config.encryptWord!
     ).toString(); // Encrypt
     do {
       iD = makeID(8);
@@ -76,13 +77,13 @@ function jwtSignUser(user: jwtUserSign) {
  export  async function login(req: Request, res: Response) : Promise<any> {
     try {
       const { pUsername } = req.body;
-      // to Decrypt --		let password = req.body.pPassword ? CryptoJS.AES.decrypt(utils.decode64(req.body.pPassword), process.env.encryptWord).toString(CryptoJS.enc.Utf8) : res.status(403).send({error: "Password is needed."});
+      // to Decrypt --		let password = req.body.pPassword ? CryptoJS.AES.decrypt(utils.decode64(req.body.pPassword),config.encryptWord).toString(CryptoJS.enc.Utf8) : res.status(403).send({error: "Password is needed."});
       let password = req.body.pPassword
         ? decode64(req.body.pPassword).toString()
         : res.send({ success: false, error: "Password is needed." }); // get Original Pass
   /*    const ePassword = CryptoJS.AES.encrypt(
         password as string,
-        process.env.encryptWord!
+       config.encryptWord!
       ).toString(); // Encrypt then encode*/
 
       const user = await User.findOne({
