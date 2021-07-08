@@ -43,7 +43,7 @@ exports.handle = async function(message: Message): Promise<Message|undefined|nul
   const gConfig = guildID
     ? await this.mongo.Guild.getGuild(guildID)
     :  { prefix: this.config.prefix }; // this method takes like 500-1000 milliseconds.
-console.log(gConfig)
+console.log(`Command initiated in ${gConfig?.guild}`);
 gConfig.prefix = this.client.prefix;
  gConfig.disabledCategories = gConfig.disabledCategories
     ? gConfig.disabledCategories
@@ -244,8 +244,7 @@ async function cacheMessage(this: Bobb,msg: Message): Promise<void> {
     );
 }
 
-async function updateStats(this: Bobb, message:Message, command: GenericCommand, lastCmd: number) {
-  console.log(command.props.triggers[0])
+async function updateStats(this: Bobb, message:Message, _command: GenericCommand, lastCmd: number) {
   if (lastCmd && Date.now() - lastCmd < 500) {
     await this.db.addSpam(message.author.id);
   }
@@ -260,6 +259,7 @@ async function updateStats(this: Bobb, message:Message, command: GenericCommand,
 }
 async function checkCooldowns(this:Bobb,message:Message, command: GenericCommand) {
   const person = await this.mongo.Person.findOne({discID: message.author.id});
+
   if(person?.bypassCooldown) return false;
   const cooldown = await this.db.getSpecificCooldown(
     command.props,
@@ -378,7 +378,7 @@ this:Bobb,
       }
     }
   }*/
-console.log(res)
+//console.log(res)
  return message.channel.send(res).catch( (e: any) => this.loggers.reportError(e, message, command))
 }
 
