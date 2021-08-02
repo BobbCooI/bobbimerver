@@ -25,7 +25,7 @@ export default async function mainLaunch() {
       Intents.FLAGS.GUILDS,
       Intents.FLAGS.GUILD_MEMBERS,
       Intents.FLAGS.GUILD_BANS,
-      Intents.FLAGS.GUILD_EMOJIS,
+      Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
       Intents.FLAGS.GUILD_INTEGRATIONS,
       Intents.FLAGS.GUILD_WEBHOOKS,
       Intents.FLAGS.GUILD_INVITES,

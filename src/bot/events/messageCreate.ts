@@ -43,7 +43,6 @@ exports.handle = async function(message: Message): Promise<Message|undefined|nul
   const gConfig = guildID
     ? await this.mongo.Guild.getGuild(guildID)
     :  { prefix: this.config.prefix }; // this method takes like 500-1000 milliseconds.
-console.log(`Command initiated in ${gConfig?.guild}`);
 gConfig.prefix = this.client.prefix;
  gConfig.disabledCategories = gConfig.disabledCategories
     ? gConfig.disabledCategories
@@ -154,7 +153,7 @@ const argManager = new ArgManager(message, cleanArgs);
   */
   }
 //const bypass = command.props.bypass;
-  if (command.props.dmOnly && message.channel.type !== "dm") return;
+  if (command.props.dmOnly && message.channel.type !== "DM") return;
 
   let runner = await this.db.fetchMemberInfo({ discID: message.author.id });
 /*console.log(runner, !bypass, message.channel.type !== "dm")
@@ -244,7 +243,9 @@ async function cacheMessage(this: Bobb,msg: Message): Promise<void> {
     );
 }
 
-async function updateStats(this: Bobb, message:Message, _command: GenericCommand, lastCmd: number) {
+async function updateStats(this: Bobb, message:Message, _command: GenericCommand, lastCmd: number) { 
+ // console.log(`Command initiated in ${message.guild}`);
+
   if (lastCmd && Date.now() - lastCmd < 500) {
     await this.db.addSpam(message.author.id);
   }

@@ -94,6 +94,7 @@ export default class Bobb {
 
     const listeners =( await import( path.join(__dirname, "events"))).default
     for (const listener of listeners) {
+
         this.client.on(
           listener,
           require(path.join(__dirname, "events", listener)).handle.bind(this)

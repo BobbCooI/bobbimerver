@@ -98,7 +98,7 @@ export default class ArgManager {
 
     if (idMatch) {
       ret = this.bot.channels.cache.get(idMatch[1] as Snowflake);
-      if (ret?.type === "category") {
+      if (ret?.type === "GUILD_CATEGORY") {
         ret = null; // If the channel is a category, don't pick it up
       }
     } else {

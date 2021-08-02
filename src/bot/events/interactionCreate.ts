@@ -9,7 +9,7 @@ exports.handle = async function(interaction:CommandInteraction|ButtonInteraction
   		await interaction.defer();
 //console.log("interaction", interaction, interaction.isMessageComponent(), interaction.isButton(), interaction.isCommand())
 if(interaction.isButton()) {
-  if(interaction.customID === "pong") {
+  if(interaction.customId === "pong") {
    await interaction.editReply(`u be roll a ${Math.floor(Math.random() * 6) + 1}`);
   }
 }
@@ -27,10 +27,10 @@ if(!command) return;
 
 	const bypass = command.props.bypass;
 	
-	if (command.props.dmOnly && !interaction.guildID) return;
+	if (command.props.dmOnly && !interaction.guildId) return;
 
 	let runner = await this.db.fetchMemberInfo({ discID: interaction.user.id });
-	if (!runner && !bypass && !interaction.guildID)
+	if (!runner && !bypass && !interaction.guildId)
 		return interaction.editReply(
 			'Please verify in DMs before using commands.'
 		);
@@ -60,9 +60,9 @@ if(!command) return;
 		);
     let permissions:any = new Permissions().add(["SEND_MESSAGES"]);
 
-	if (interaction.guildID) {
+	if (interaction.guildId) {
 		permissions = (await this.client.channels.fetch(
-			interaction.channelID
+			interaction.channelId
 		)).permissionsFor(this.client.user.id);
 	}
 	if (command.props.perms.some((perm: any) => !permissions.has(perm))) {

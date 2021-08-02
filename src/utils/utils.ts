@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";
 import axios from "axios";
 import jwt from "jsonwebtoken";
-import Discord, { Snowflake } from "discord.js";
+import Discord from "discord.js";
 import { webhook } from "../types/discord";
 import fs from 'fs';
 import config from "../config.json";
@@ -28,8 +28,10 @@ export async function createWebhook(opts: webhook): Promise<void> {
        ...opts
     }*/
   let webhookClient = new Discord.WebhookClient(
-    config.webhookURL! as Snowflake,
-    config.webhookToken!
+    {
+      url: config.webhookURL,
+      token: config.webhookToken
+    }
   );
   let date = Date()
     .toString()

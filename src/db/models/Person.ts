@@ -58,7 +58,7 @@ export interface iUserMethods extends iUser, Document {
 export interface iUserModel extends Model<iUserMethods> {
   toggleBypassCD(user: string): Promise<null|string>;
 }
-const userSchema: Schema<iUserMethods|iUserModel> = new Schema({
+const userSchema: Schema<iUserMethods&iUserModel> = new Schema({
  // Website
   username: { type: String },
   loweruser: { type: String },
@@ -120,4 +120,4 @@ if(!getPerson) return null;
 else await this.updateOne({discID: user}, {$set: {bypassCooldown: !getPerson.bypassCooldown}});
 return (!getPerson.bypassCooldown).toString();
 }
-export default model<iUserMethods, iUserModel>("user", userSchema);
+export default model<iUserMethods & iUserModel>("user", userSchema);

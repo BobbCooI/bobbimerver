@@ -1,6 +1,5 @@
 import GenericCommand from "../../commandTypes/GenericCommand";
 import { runFnArgs } from '../../../types/bot';
-import { MessageButton } from 'discord.js';
 export default new GenericCommand(
   {
     triggers: ["ping", "pong"],
@@ -14,25 +13,32 @@ export default new GenericCommand(
     }
   },
   async ({ Bobb, message }: runFnArgs) => {
-   const ret = new Bobb!.Return("message");
-ret
-.setContent(`🏓 Pong! ${Date.now() - message!.createdTimestamp}ms`)
-.setComponents([
-    new MessageButton({type: 2,
-    label: "lol",
-    style:"PRIMARY",
-    customID: "pong"
-    })
-    ]);
-return ret;
+    const ret = new Bobb!.Return("message");
+    ret
+      .setContent(`🏓 Pong! ${Date.now() - message!.createdTimestamp}ms`)
+      .setButtons([
+        {
+          type: 2,
+          label: "lol",
+          style: "PRIMARY",
+          customId: "1"
+        },
+        {
+          type: 2,
+          label: "lol",
+          style: "SECONDARY",
+          customId: "2"
+        }
+      ]);
+    return ret;
   },
   async ({
-  Bobb,
+    Bobb,
     interaction
   }: runFnArgs) => {
     const ret = new Bobb!.Return("interaction");
     ret.setContent(`🏓 Slash Command Pong! ${Date.now() -
       interaction!.createdTimestamp!}ms`);
-      return ret;
+    return ret;
   }
 );

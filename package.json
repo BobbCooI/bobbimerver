@@ -1,10 +1,8 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
-  "name": "hello-express",
+  "//1": "provides a server for https://bobbime.glitch.me",
+  "name": "bobbimerver",
   "version": "0.0.1",
-  "description": "A simple Node app built on Express, instantly up and running.",
+  "description": "Handles the backend processing and discord bot for the website",
   "main": "server.js",
   "scripts": {
     "start": "tsc && node dist/src/index.js",
@@ -24,12 +22,13 @@
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
     "discord-api-types": "^0.18.1",
-    "discord.js": "^13.0.0-dev.1816a93b1b1b2bae47e8651e76fa53699de8421d",
+    "discord.js": "^13.0.0-dev.t1627862659.e2e4f65",
     "express": "^4.17.1",
     "form-data": "^4.0.0",
     "got": "^11.8.2",
     "helmet": "^4.6.0",
     "hls-download": "^2.5.3",
+    "hot-shots": "^8.4.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "lookpath": "^1.2.1",
@@ -42,30 +41,23 @@
     "nprogress": "^0.2.0",
     "typescript": "^4.3.5",
     "utf-8-validate": "^5.0.5",
-    "yaml": "^1.10.2",
-    "hot-shots": "^8.4.0"
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "@types/node": "^15.3.1",
+    "@types/bcrypt": "^5.0.0",
+    "@types/cheerio": "^0.22.29",
     "@types/cors": "^2.8.10",
-    "@types/express": "^4.17.9",
     "@types/crypto-js": "^4.0.1",
+    "@types/express": "^4.17.9",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/lodash": "^4.14.170",
     "@types/morgan": "^1.9.2",
-    "@types/bcrypt": "^5.0.0",
-    "@types/cheerio": "^0.22.29"
+    "@types/node": "^15.3.1"
   },
   "engines": {
     "node": "14.x"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/hello-express"
-  },
-  "license": "MIT",
-  "keywords": [
-    "node",
-    "glitch",
-    "express"
-  ]
+    "url": "https://github.com/BobbCooI/bobbimerver"
+  }
 }
