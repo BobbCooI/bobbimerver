@@ -1,4 +1,17 @@
-import { Collection, Message, MessageEmbed, MessageReaction, User, MessageButton, MessageButtonOptions, MessageActionRow, MessageActionRowComponentResolvable, CommandInteraction, CommandInteractionOption } from 'discord.js';
+import {
+  Collection,
+  Message,
+  MessageEmbed,
+  MessageReaction,
+  User,
+  MessageOptions,
+  MessageButton,
+  MessageButtonOptions,
+  MessageActionRow,
+  MessageActionRowComponentResolvable,
+  CommandInteraction,
+  CommandInteractionOption
+} from 'discord.js';
 import Bobb from '../bot/botClass';
 import _ from 'lodash';
 import ArgManager from "../utils/argsManager";
@@ -37,6 +50,12 @@ export interface runFnArgs {
   argslash?: Collection<string, CommandInteractionOption>;
   argManager?: ArgManager;
   addCD?: any;
+}
+export interface resolveMessageOpts {
+  noEmbeds?: boolean;
+  noContent?: boolean;
+  noComponents?: boolean;
+  ephemeral?: boolean;
 }
 /*export interface runFnMessageArgs extends runFnArgs {
   args: string[]
@@ -104,14 +123,15 @@ export class Return {
   Paginator(message: Message, footer: string): any {
     if (!this.embeds || !this.embeds.length || this.embeds.length == 0) return;
     if (this.type == "message") {
-      if (this.embeds.length == 1) return message.channel.send({ embeds: [this.embeds[0]] });
+
+      if (this.embeds.length == 1) return message.channel.send(<MessageOptions>this);
       let person = message.author;
       let currentPage = 0;
       let firstEmbed = this.embeds[currentPage].setFooter(
         `${footer} | Page ${currentPage + 1}/${this.embeds.length}`,
         person.displayAvatarURL({ format: "png", dynamic: true }))
 
-      message.channel.send({ embeds: [firstEmbed] }).then(message => {
+      message.channel.send({ embeds: [firstEmbed], ...this.resolvedMessageOpts({noEmbeds: true}) }).then(message => {
         message.react("⏪");
         message.react("◀️");
         message.react("▶️");
@@ -161,5 +181,14 @@ export class Return {
       });
     }
     return this;
+  }
+
+   resolvedMessageOpts(options: resolveMessageOpts): MessageOptions {
+    const ret:any = {}
+    if(this.embeds && !options.noEmbeds) ret.embeds = this.embeds
+    if(this.components && !options.noComponents) ret.components = this.components;
+    if(this.content && !options.noContent) ret .content = this.content;
+    if(this.ephemeral && !options.ephemeral) ret.ephemeral = this.ephemeral;
+    return ret;
   }
 }

@@ -25,9 +25,9 @@ export default new GenericCommand(
         },
         {
           type: 2,
-          label: "lol",
-          style: "SECONDARY",
-          customId: "2"
+          label: "1",
+          style: "LINK",
+          url: "https://tinyurl.com/ye2dtd5m"
         }
       ]);
     return ret;
