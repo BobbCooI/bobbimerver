@@ -140,67 +140,6 @@ slashCmds.forEach(async cmd => {
       }
     }
     return undefined;
-  },
-
-
-  Paginator(message, embeds, footer) {
-    if (!message.interaction) {
-      let person = message.author;
-      let currentPage = 0;
-      let firstEmbed = embeds[currentPage].setFooter(
-        `${footer} | Page ${currentPage + 1}/${embeds.length}`,
-        person.displayAvatarURL({ format: "png", dynamic: true })
-      );
-      if (!embeds.length) return console.error(`${embeds.length} embeds given`);
-      message.channel.send(firstEmbed).then(message => {
-        message.react("⏪");
-        message.react("◀️");
-        message.react("▶️");
-        message.react("⏩");
-        const filter = (reaction, user) =>
-          ["⏪", "◀️", "▶️", "⏩"].includes(reaction.emoji.name) &&
-          user.id === person.id;
-        const collector = message.createReactionCollector(filter, {
-          time: 10000000
-        });
-        collector.on("collect", reaction => {
-          if (reaction.emoji.name === "▶️") {
-            if (currentPage < embeds.length - 1) {
-              currentPage++;
-              console.log(embeds[currentPage]);
-              const newMan = embeds[currentPage].setFooter(
-                `${footer} | Page ${currentPage + 1}/${embeds.length}`,
-                person.displayAvatarURL({ format: "png", dynamic: true })
-              );
-              message.edit(newMan);
-            }
-          } else if (reaction.emoji.name === "◀️") {
-            if (currentPage !== 0) {
-              currentPage--;
-              const newMan = embeds[currentPage].setFooter(
-                `${footer} | Page ${currentPage + 1}/${embeds.length}`,
-                person.displayAvatarURL({ format: "png", dynamic: true })
-              );
-              message.edit(newMan);
-            }
-          } else if (reaction.emoji.name === "⏪") {
-            currentPage = 0;
-            const newMan = embeds[currentPage].setFooter(
-              `${footer} | Page 1/${embeds.length}`,
-              person.displayAvatarURL({ format: "png", dynamic: true })
-            );
-            message.edit(newMan);
-          } else if (reaction.emoji.name === "⏩") {
-            currentPage = embeds.length - 1;
-            const newMan = embeds[currentPage].setFooter(
-              `${footer} | Page ${embeds.length}/${embeds.length}`,
-              person.displayAvatarURL({ format: "png", dynamic: true })
-            );
-            message.edit(newMan);
-          }
-        }); //collector On
-      });
-    }
   }
 });
 

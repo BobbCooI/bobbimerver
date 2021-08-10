@@ -9,9 +9,10 @@ import got from "got";
 import * as cheerio from "cheerio";
 import * as utils from "../utils";
 export default async function gogoScrap(gogoLink: string) {
-  const goDef = /https?:\/\/gogo-play\.net/gm;
+  const goDef = /https?:\/\/(gogo-play|streamani)\.net/gm;
   const goStream = /\/\/streamani\.net\/streaming\.php\?([a-zA-Z-\/0-9_=;+%&])+/gm;
-  const streamServer = /\/\/streamani\.net\/loadserver\.php\?([a-zA-Z-\/0-9_=;+%&])+/g;
+  //const oldStreamServer = /\/\/streamani\.net\/loadserver\.php\?([a-zA-Z-\/0-9_=;+%&])+/g;  probs can be removed, this was the old stream server
+  const newStreamServer = /\/\/streamani\.net\/embedplus\?([a-zA-Z-\/0-9_=;+%&])+/g
   const sourceReg = /(sources:\s?\[)({.*}),?]/gm;
 
   if (!goDef.exec(gogoLink)) throw new Error("Invalid Link");
@@ -27,8 +28,8 @@ export default async function gogoScrap(gogoLink: string) {
   toApi = `https:${toApi}`;
 
   const nextHTML = (await got(toApi)).body;
-  const toServer: string | null = `https:${streamServer.exec(nextHTML)?.[0]}`;
-  console.log("Gogo function to server:", toServer);
+
+  const toServer: string | null = `https:${newStreamServer.exec(nextHTML)?.[0]}`;
 
   if (toServer === null) throw new Error("Could not get stream link");
   const serverHTML = (await got(toServer)).body;

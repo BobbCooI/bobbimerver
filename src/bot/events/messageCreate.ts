@@ -354,7 +354,7 @@ this:Bobb,
  } else if(typeof res == "string") {
    res = { content: res}
  }else{
-  throw new Error(`What kind of return for ${command.props.triggers[0]}?`)
+  throw new Error(`What kind of return for ${command.props.triggers[0]}? I received ${res} type ${typeof res}`)
 }
   /*if (res instanceof Object) {
     if (res.reply) {

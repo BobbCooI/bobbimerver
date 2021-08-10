@@ -27,9 +27,11 @@ export default new GenericCommand(
     if(mainURL) {
       addCD();
       return Bobb!.utils.decode64(mainURL.link);
-    } else throw new Error('unknown error 😮‍💨')
+    } else {
+    throw new Error('unknown error 😮‍💨')
+    }
  } catch(e) {
-   return e || 'there was an error fetching with that link..'
+   return e.toString() || 'there was an error fetching with that link..'
  }
   }, async ({Bobb ,argslash, addCD}: runFnArgs) => {
    try {
