@@ -1,6 +1,5 @@
 import GenericCommand from "../../commandTypes/GenericCommand";
 import { runFnArgs } from "../../../types/bot";
-import { prefix } from '../../../utils/constants'
 export default new GenericCommand(
   {
     triggers: ["crlatest", "crlate", "crla"],
@@ -17,7 +16,7 @@ export default new GenericCommand(
     addCD();
     let person = Bobb!.client.crCache[message!.author.id];
     if (!person)
-      return `Please start by choosing an anime with the command \`${prefix}crSearch <term(s)>\``;
+      return `Please start by choosing an anime with the command \`${Bobb!.config.prefix}crSearch <term(s)>\``;
     if (!person.latest) {
       return "at least fetch an episode first..";
     }

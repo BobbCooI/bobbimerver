@@ -1,7 +1,6 @@
 import GenericCommand from "../../commandTypes/GenericCommand";
 import Discord from "discord.js";
 import { runFnArgs } from "../../../types/bot";
-import { prefix } from '../../../utils/constants'
 export default new GenericCommand(
   {
     triggers: ["crsearch", "csearch", "crunchysearch"],
@@ -43,7 +42,7 @@ export default new GenericCommand(
         .setDescription( search.join("\n"))
         .setFooter(`Time taken: ${Bobb!.utils.timeMili(
           en - startTime
-        )} - You can choose like this: ${prefix}crChoose 1st`)
+        )} - You can choose like this: ${Bobb!.config.prefix}crChoose 1st`)
       ]);
   },
   async ({ Bobb, interaction, argslash, addCD }: runFnArgs) => {
@@ -68,7 +67,7 @@ export default new GenericCommand(
         .setFooter(
           `Time taken: ${Bobb!.utils.timeMili(
             en - startTime
-          )} - You can choose like this: ${prefix}crChoose 1st`
+          )} - You can choose like this: ${Bobb!.config.prefix}crChoose 1st`
         )]);
         return Ret;
         }

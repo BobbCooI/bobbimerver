@@ -1,7 +1,6 @@
 function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-export const prefix = "c!"
 export const AUTORESPONSE_MATRIX: {[index: string]: any} = {
   dad: {
     regex: /^(im|i['’]m|i am)\s+(.+)/i,

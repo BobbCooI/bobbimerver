@@ -1,7 +1,7 @@
 import GenericCommand from "../../commandTypes/GenericCommand";
 import Discord from "discord.js";
 import { runFnArgs } from "../../../types/bot";
-import { prefix } from '../../../utils/constants'
+import { prefix } from '../../../config.json'
 export default new GenericCommand(
   {
     triggers: ["crgetep", "cgetep", "crunchygetep"],

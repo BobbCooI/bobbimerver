@@ -1,7 +1,6 @@
 import GenericCommand from "../../commandTypes/GenericCommand";
 import Discord from "discord.js";
 import { runFnArgs} from '../../../types/bot';
-import { prefix } from '../../../utils/constants'
 export default new GenericCommand(
   {
     triggers: ["vrvsearch", "vsearch"],
@@ -49,7 +48,7 @@ export default new GenericCommand(
         .setFooter(
           `Time taken: ${Bobb!.utils.timeMili(
             end - startTime
-          )} - You can choose like this: ${prefix}vrvChoose 1st`
+          )} - You can choose like this: ${Bobb!.config.prefix}vrvChoose 1st`
         )
     ]);
     

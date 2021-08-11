@@ -1,7 +1,6 @@
 import GenericCommand from "../../commandTypes/GenericCommand";
 import Discord from "discord.js";
 import { runFnArgs } from "../../../types/bot";
-import { prefix } from '../../../utils/constants'
 export default new GenericCommand(
   {
     triggers: ["funisearch", "fsearch", "funsearch"],
@@ -45,7 +44,7 @@ export default new GenericCommand(
         .setDescription(search.res.join("\n"))
         .setFooter(`Time taken: ${Bobb!.utils.timeMili(
           en - startTime
-        )} - You can choose like this: ${prefix}funiChoose 1st`)
+        )} - You can choose like this: ${Bobb!.config.prefix}funiChoose 1st`)
       ]);
       return Ret;
       }

@@ -2,7 +2,7 @@ import GenericCommand from "../../commandTypes/GenericCommand";
 import Discord from "discord.js";
 import { runFnArgs } from "../../../types/bot";
 import axios from 'axios';
-import { prefix } from '../../../utils/constants';
+import { prefix } from '../../../config.json';
 import _ from "lodash"
 export default new GenericCommand(
   {

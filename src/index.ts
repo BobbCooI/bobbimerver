@@ -3,7 +3,6 @@ const app = express();
 import db from "./db/mongoose";
 import Bobb, { extClient } from "./bot/botClass";
 import { Intents } from 'discord.js';
-import { prefix } from './utils/constants';
 
 import cors from "cors";
 import helmet from "helmet";
@@ -38,7 +37,7 @@ export default async function mainLaunch() {
       Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
       Intents.FLAGS.DIRECT_MESSAGE_TYPING
     ],
-    prefix
+    prefix: config.prefix
   });
 
   client.login(config.botToken!);

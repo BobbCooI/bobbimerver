@@ -36,7 +36,7 @@ export class extClient extends Discord.Client {
 /** Class Imports **/
 
 export default class Bobb {
-  client: extClient; //class pubApi implements Discord.Client {public api: object;};
+  client: extClient;
   cmds: Array<GenericCommand>;
   slashCmds: Array<string>;
   mongo: any;
@@ -44,7 +44,7 @@ export default class Bobb {
   botStats: any;
   config: any;
   Crunchy: any;
-   Funi: any;
+  Funi: any;
   VRV: any;
   loggers: any;
   misc: any;
@@ -72,7 +72,6 @@ export default class Bobb {
     this.VRV = new VRV(this, {lang: "enUS", debug: true, premium: true})
     this.Funi = Funi;
     this.loggers = loggers(this);
-    //  this.helpers = require('./utils/dbFunctions.js')(this);
     this.misc = misc(this);
     this.utils = utils;
     this.constants = constants;
