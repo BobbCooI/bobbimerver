@@ -28,3 +28,4 @@ pnpm-debug.log*
 session.yml
 dist/
 config.json
+todo

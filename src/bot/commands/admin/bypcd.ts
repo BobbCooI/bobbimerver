@@ -1,31 +1,31 @@
-import GenericCommand from "../../commandTypes/GenericCommand";
-import { runFnArgs} from '../../../types/bot';
-export default new GenericCommand(
+import { executeArgs } from "lib/bot/botTypes";
+import { Command } from "../../../../lib/bot/Command";
+import { Permissions, User } from "discord.js";
+export default new Command(
   {
-    triggers: ["bypcd", "bypasscd"],
-    usage: "{command} <commandName>",
-    bypass: true,
-    description: "See all the commands",
-    slashCmd: true,
-    slashOpts: {
-      name: "bypasscooldown",
-      description: "bypass cooldown for commands",
-      options: [
-        {
-          name: "user",
-          description: "user to toggle cooldown bypassing",
-          type: 6,
-          required: false
-        }
-      ],
-    },
+    name: "bypcd",
+    description: "bypass cooldown for commands",
+    clientPermissions: [
+      Permissions.FLAGS.SEND_MESSAGES,
+      Permissions.FLAGS.EMBED_LINKS,
+    ],
+    enableSlashCommand: true,
+    args: [
+      {
+        id: "guy",
+        type: "user",
+        description: "user to to turn off cooldowns for",
+        default: undefined,
+        required: false
+      }
+    ],
+    restrictTo: "guild",
     ownerOnly: true
   },
-  async ({ Bobb,message, argManager }: runFnArgs) => {
+  async ({ Swessage }: executeArgs) => {
+    const user = Swessage.args?.get("guy")?.user || Swessage.author;
     
-    const user = argManager!.resolveUser() || message!.author;
-    
-    const success = await Bobb!.mongo.Person.toggleBypassCD(user.id);
+    const success = await Swessage.Bobb.mongo.Person.toggleBypassCD((user as User).id);
     if(success) return `Successfully toggled cooldown bypass to \`${success}\` for ${user}!`
   else return "Unsuccessful.. is the user in the database?"
   })

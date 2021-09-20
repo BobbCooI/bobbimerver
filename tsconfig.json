@@ -3,7 +3,12 @@
     "allowJs": true,
     "target": "es6",
     "module": "commonjs",
-    "lib": ["dom", "es6", "es2017", "esnext.asynciterable"],
+    "lib": [
+      "dom",
+      "es6",
+      "es2017",
+      "esnext.asynciterable"
+    ],
     "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "dist",
@@ -22,9 +27,31 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-  "baseUrl": ""
+    "baseUrl": ""
   },
-  "types": ["cors"],
-  "exclude": ["node_modules"],
-  "include": ["./src/*.ts", "./src/**/*.tsx", "./src/**/*.ts", "./src/**/*.js", "./src/*.js"]
+  "types": [
+    "cors"
+  ],
+  "exclude": [
+    "node_modules",
+    "./node_modules",
+    "./node_modules/*",
+    "./node_modules/@types/node/index.d.ts",
+    "Command.ts",
+    "./lib/bot/Command.ts"
+  ],
+  "include": [
+    "./src/*.ts",
+    "./src/**/*.ts",
+
+    "./src/**/*.js",
+    "./src/*.js",
+
+
+    "./lib/*.ts",
+    "./lib/**/*.ts",
+    
+    "./lib/*.js",
+    "./lib/**/*.js"
+  ]
 }

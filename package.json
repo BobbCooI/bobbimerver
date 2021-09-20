@@ -21,9 +21,11 @@
     "core-js": "^3.15.2",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
+    "discord-akairo": "^8.1.0",
     "discord-api-types": "^0.18.1",
-    "discord.js": "^13.0.0-dev.t1627862659.e2e4f65",
+    "discord.js": "^13.1.0",
     "express": "^4.17.1",
+    "i18next": "^20.4.0",
     "form-data": "^4.0.0",
     "got": "^11.8.2",
     "helmet": "^4.6.0",
@@ -55,7 +57,7 @@
     "@types/node": "^15.3.1"
   },
   "engines": {
-    "node": "14.x"
+    "node": "16.x"
   },
   "repository": {
     "url": "https://github.com/BobbCooI/bobbimerver"

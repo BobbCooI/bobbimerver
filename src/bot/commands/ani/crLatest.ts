@@ -1,39 +1,21 @@
-import GenericCommand from "../../commandTypes/GenericCommand";
-import { runFnArgs } from "../../../types/bot";
-export default new GenericCommand(
+import { executeArgs } from "lib/bot/botTypes";
+import { Command } from "../../../../lib/bot/Command";
+export default new Command(
   {
-    triggers: ["crlatest", "crlate", "crla"],
-    usage: "{command}",
+    name: "crlink",
     description: "Use this command to get your latest episode fetch.",
-    slashCmd: false,
-    slashOpts: {
-      name: "crLatest",
-      description: "Get your latest episode fetch."
-    },
+    enableSlashCommand: true,
     cooldown: 6.5 * 1000
   },
-  async ({ Bobb, message, addCD }: runFnArgs) => {
-    addCD();
-    let person = Bobb!.client.crCache[message!.author.id];
+  async ({ Swessage, addCD }: executeArgs) => {
+    addCD?.();
+    let person = Swessage.Bobb.client.crCache[Swessage.author.id];
     if (!person)
-      return `Please start by choosing an anime with the command \`${Bobb!.config.prefix}crSearch <term(s)>\``;
+      return `Please start by choosing an anime with the command \`${Swessage.Bobb.config.prefix}crSearch <term(s)>\``;
     if (!person.latest) {
       return "at least fetch an episode first..";
     }
-    const Ret = new Bobb!.Return("message")
+    const Ret = new Swessage.Bobb.Return(Swessage.Bobb)
     Ret.setEmbeds([person.latest]);
     return Ret;
-  },
-  async ({ Bobb, addCD, interaction }: runFnArgs) => {
-    addCD();
-    let person = Bobb!.client.crCache[interaction!.user.id];
-    if (!person)
-      return `Please start by choosing an anime with the command \`/crSearch <term(s)>\``;
-    if (!person.latest) {
-      return "at least fetch an episode first..";
-    }
-    const Ret = new Bobb!.Return("interaction")
-    Ret.setEmbeds([person.latest]);
-    return Ret;
-  }
-);
+  });

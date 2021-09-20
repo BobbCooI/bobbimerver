@@ -1,82 +1,52 @@
-import GenericCommand from "../../commandTypes/GenericCommand";
-import Discord from "discord.js";
-import { runFnArgs } from "../../../types/bot";
-export default new GenericCommand(
+import { executeArgs } from "lib/bot/botTypes";
+import { Command } from "../../../../lib/bot/Command";
+import {Permissions, MessageEmbed} from "discord.js"
+export default new Command(
   {
-    triggers: ["funisearch", "fsearch", "funsearch"],
-    usage: "{command} {searchTerm(s)}",
-    description:
-      "1/3 - Use this command to search for an anime of your choice with Funimation.",
-    slashCmd: true,
-    slashOpts: {
-      name: "funisearch",
-      description: "Use this command to search. Then use funiChoose to choose.",
-      options: [
-        {
-          name: "search_query",
-          description: "Search for an anime with Funimation.",
-          type: 3,
-          required: true
-        }
-      ]
-    },
+    name: "funisearch",
+    description: "1/3 - Use this command to search for an anime of your choice with Funimation.",
+    clientPermissions: [
+        Permissions.FLAGS.SEND_MESSAGES,
+        Permissions.FLAGS.EMBED_LINKS,
+    ],
+    enableSlashCommand: false,
+    args: [
+      {
+        id: "search_query",
+        type: "string",
+        description: "Search for an anime with Funimation.",
+        default: undefined,
+        required: true
+      }
+    ],
+    restrictTo: "all",
     cooldown: 8 * 1000
   },
-  async ({ Bobb, message, argManager , addCD}: runFnArgs) => {
-    if (Bobb!.client.funiCache[message!.author.id])
-      delete Bobb!.client.funiCache[message!.author.id];
+  async ({ Swessage, addCD }: executeArgs) => {
+
+    if (Swessage.Bobb.client.funiCache[Swessage.author.id])
+      delete Swessage.Bobb.client.funiCache[Swessage.author.id];
     let startTime = new Date().getTime();
-    let base = (Bobb!.client.funiCache[message!.author.id] = new Bobb!.Funi(
-      message!.author.id,
-      Bobb,
-      { enSub: !(message!.author.id=="707704956131475539" || message!.author.id=="443145161057370122") }
+    let base = (Swessage.Bobb.client.funiCache[Swessage.author.id] = new Swessage.Bobb.Funi(
+      Swessage.author.id,
+      Swessage.Bobb,
+      { enSub: !(Swessage.author.id=="707704956131475539" || Swessage.author.id=="443145161057370122") }
     ));
     //  let auth = await base.login();
 
-    let search = await base.search(argManager!.args);
+    let search = await base.search(Swessage.args?.get("search_query")?.value);
     let en = new Date().getTime();
     if (search.success === false) return search.error;
     else {
-      addCD();
-      let Ret= new Bobb!.Return("message")
-        Ret.setEmbeds([new Discord.MessageEmbed()
+      addCD?.();
+      let Ret= new Swessage.Bobb.Return(Swessage.Bobb)
+        Ret.setEmbeds([new MessageEmbed()
         .setTitle( "Choices")
         .setDescription(search.res.join("\n"))
-        .setFooter(`Time taken: ${Bobb!.utils.timeMili(
+        .setFooter(`Time taken: ${Swessage.Bobb.utils.timeMilli(
           en - startTime
-        )} - You can choose like this: ${Bobb!.config.prefix}funiChoose 1st`)
+        )} - You can choose like this: ${Swessage.Bobb.config.prefix}funiChoose 1st`)
       ]);
       return Ret;
       }
-  },
-  async ({ Bobb, interaction, argslash, addCD }: runFnArgs) => {
-    if (Bobb!.client.funiCache[interaction!.user.id])
-      delete Bobb!.client.funiCache[interaction!.user.id];
-    let startTime = new Date().getTime();
-    let base = (Bobb!.client.funiCache[interaction!.user.id] = new Bobb!.Funi(
-      interaction!.user.id,
-      Bobb,
-      { enSub: !(interaction!.user.id=="707704956131475539" || interaction!.user.id=="443145161057370122") }
-    ));
-     await base.login();
-
-    let search = await base.search(argslash!.get("search_query")!.value);
-    let en = new Date().getTime();
-    if (search.success === false) return search.error;
-    else {
-    addCD();
-      const Ret = new Bobb!.Return("interaction")
-      Ret.setEmbeds([
-        new Discord.MessageEmbed()
-          .setTitle("Choices")
-          .setDescription(search.res.join("\n"))
-          .setFooter(
-            `Time taken: ${Bobb!.utils.timeMili(
-              en - startTime
-            )} - You can choose like this: /funiChoose 1st`
-          )
-      ]);
-      return Ret;
-      }
-  }
-);
+  })

@@ -1,14 +1,14 @@
 import express, { Request, Response } from "express";
 const app = express();
-import db from "./db/mongoose";
+import db from "../lib/db/mongoose";
 import Bobb, { extClient } from "./bot/botClass";
 import { Intents } from 'discord.js';
 
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-import Stats from "./db/models/Stats";
-import Api from './api';
+import Stats from "../lib/db/models/Stats";
+import Api from './webApi';
 import config from "./config.json";
 import cookieParser from 'cookie-parser';
 //import Sentry from "@sentry/node";
@@ -27,17 +27,13 @@ export default async function mainLaunch() {
       Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
       Intents.FLAGS.GUILD_INTEGRATIONS,
       Intents.FLAGS.GUILD_WEBHOOKS,
-      Intents.FLAGS.GUILD_INVITES,
-      Intents.FLAGS.GUILD_VOICE_STATES,
       Intents.FLAGS.GUILD_PRESENCES,
       Intents.FLAGS.GUILD_MESSAGES,
       Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-      Intents.FLAGS.GUILD_MESSAGE_TYPING,
       Intents.FLAGS.DIRECT_MESSAGES,
       Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-      Intents.FLAGS.DIRECT_MESSAGE_TYPING
     ],
-    prefix: config.prefix
+    prefix: config.options.prefix
   });
 
   client.login(config.botToken!);

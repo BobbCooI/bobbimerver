@@ -1,47 +1,38 @@
-import GenericCommand from "../../commandTypes/GenericCommand";
-import { runFnArgs } from "../../../types/bot";
-import getGogo from '../../../utils/scrapers/gogo';
-export default new GenericCommand(
+import { executeArgs } from "lib/bot/botTypes";
+import { Command } from "../../../../lib/bot/Command";
+import { Permissions } from "discord.js";
+import getGogo from '../../../../lib/utils/scrapers/gogo';
+export default new Command(
   {
-    triggers: ["gogo"],
-    usage: "{command} {link}",
+    name: "gogo",
     description: "fetches gogo stream using a given url. (`https://gogo-play.net`)",
-    slashCmd: true,
-    slashOpts: {
-      name: "gogo",
-      description: "fetches gogo stream using a given url. (`https://gogo-play.net`)",
-      options: [
-        {
-          name: "link",
-          description: "gogo link (`https://gogo-play.net`)",
-          type: 3,
-          required: true
-        }
-      ]
-    },
-    cooldown: 8 * 1000
+    clientPermissions: [
+      Permissions.FLAGS.SEND_MESSAGES,
+      Permissions.FLAGS.EMBED_LINKS,
+    ],
+    enableSlashCommand: true,
+    args: [
+      {
+        id: "link",
+        type: "string",
+        description: "gogo link (`https://gogo-play.net`)",
+        default: undefined,
+        required: true
+      }
+    ],
+    cooldown: 8 * 1000,
+    restrictTo: "all"
   },
-  async ({Bobb,  argManager , addCD}: runFnArgs) => {
- try {
-    let mainURL = await getGogo(argManager!.args?.[0] || '');
-    if(mainURL) {
-      addCD();
-      return Bobb!.utils.decode64(mainURL.link);
-    } else {
-    throw new Error('unknown error 😮‍💨')
+  async ({ Swessage, addCD }: executeArgs) => {
+    try {
+      let mainURL = await getGogo(Swessage.args?.get("link")?.value!.toString() || '');
+      if (mainURL) {
+        addCD?.();
+        return Swessage.Bobb.utils.decode64(mainURL.link);
+      } else {
+        throw new Error('unknown error 😮‍💨')
+      }
+    } catch (e) {
+      return e.toString() || 'there was an error fetching with that link..'
     }
- } catch(e) {
-   return e.toString() || 'there was an error fetching with that link..'
- }
-  }, async ({Bobb ,argslash, addCD}: runFnArgs) => {
-   try {
-    let mainURL = await getGogo(argslash!.get('link')!.value as string)
-    if(mainURL) {
-      addCD()
-      return Bobb!.utils.decode64(mainURL.link);
-    } else throw new Error('unknown error 😮‍💨')
-     
-   } catch(e) {
-    return e || 'there was an error fetching with that link..'
-   }
-})
+  })

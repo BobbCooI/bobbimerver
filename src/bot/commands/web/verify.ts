@@ -1,28 +1,40 @@
-import GenericCommand from "../../commandTypes/GenericCommand.js";
-import { runFnArgs } from "../../../types/bot";
-export default new GenericCommand(
+import { executeArgs } from "lib/bot/botTypes";
+import { Command } from "../../../../lib/bot/Command";
+import { Permissions } from "discord.js";
+export default new Command(
   {
-    triggers: ["verify"],
-    minArgs: 1,
-    usage: "{command} [UUID]",
-    missingArgs: "Missing the UUID.",
-    "description": "Verify your discord using the UUID on your website account.",
-    dmOnly: true,
-    cooldown: 4500
+    name: "verify",
+    description: "Verify your discord using the UUID on your website account.",
+    clientPermissions: [
+      Permissions.FLAGS.SEND_MESSAGES,
+      Permissions.FLAGS.EMBED_LINKS,
+    ],
+    enableSlashCommand: true,
+    args: [
+      {
+        id: "uuid",
+        type: "string",
+        description: "uuid string from website",
+        default: undefined,
+        required: true
+      }
+    ],
+    cooldown: 8 * 1000,
+    restrictTo: "dm"
   },
-  async ({ Bobb, message, argManager, addCD }: runFnArgs) => {
-    if(!argManager!.args || !argManager!.args.length || argManager!.args.length === 0) return `give me your UUID from your profile on <website soon>!`
-    addCD();
-    let pos = await Bobb!.mongo.Person.findOne({ UUID: argManager!.args[0] });
+  async ({ Swessage, addCD }: executeArgs) => {
+    if(!Swessage.args || !Swessage.args?.size) return `give me your UUID from your profile on <website soon>!`
+    addCD?.();
+    let pos = await Swessage.Bobb.mongo.Person.findOne({ UUID: Swessage.args?.get("uuid")?.value });
 
     let upd = {
-      discID: message!.author.id,
-      discTag: message!.author.tag,
+      discID: Swessage.author.id,
+      discTag: Swessage.author.tag,
       verified: true
     };
     if (pos) {
       if (pos.discTag) return `You have already linked your Discord account.`;
-      await Bobb!.db.updateMember({ UUID: argManager!.args[0] }, upd);
+      await Swessage.Bobb.db.updateMember({ UUID: Swessage.args?.get("uuid")?.value }, upd);
       return `Verification successful. Thank you for linking!`;
     } else {
       return `Verification unsuccessful. Please find your UUID by going to the Website > Account > Discord`;

@@ -1,93 +1,50 @@
-import GenericCommand from "../../commandTypes/GenericCommand";
-import Discord from "discord.js";
-import { runFnArgs } from "../../../types/bot";
-
-export default new GenericCommand(
+import {MessageEmbed} from "discord.js";
+import { executeArgs } from "lib/bot/botTypes";
+import { Command } from "../../../../lib/bot/Command";
+export default new Command(
   {
-    triggers: ["crlink", "clink", "crunchylink", "crl"],
-    usage: "{command} {link}",
-    description:
-      "Input an episode link from crunchyroll and you'll get back the video link.",
-    slashCmd: true,
-    slashOpts: {
-      name: "crlink",
-      description: "Input an episode link from crunchyroll.",
-      options: [
+    name: "crlink",
+    description: "Input an episode link from crunchyroll and you'll get back the video link.",
+    enableSlashCommand: true,
+      args: [
         {
-          type: 3,
-          name: "link",
-          description: "Crunchyroll link",
+          id: "link",
+          type: "string",
+          default: undefined,
           required: true
         }
-      ]
-    },
-    cooldown: 5*1000
+      ],
+    cooldown: 5 * 1000
   },
-  async ({ Bobb, message, addCD, argManager }: runFnArgs) => {
-        if(!argManager?? !((argManager!.args as Array<string>).length)) return `pick something to choose 🙄`;
-
+  async ({ Swessage, addCD }: executeArgs) => {
 let st = Date.now();
-    addCD();
-    let person = Bobb!.client.crCache[message!.author.id];
+    addCD?.();
+    let person = Swessage.Bobb.client.crCache[Swessage.author.id];
     if (!person) {
-      person = Bobb!.client.crCache[message!.author.id] = new Bobb!.Crunchy(
-        message!.author.id,
-        Bobb
+      person = Swessage.Bobb.client.crCache[Swessage.author.id] = new Swessage.Bobb.Crunchy(
+        Swessage.author.id,
+        Swessage.Bobb
       );
        await person.login();
     }
-    let epFromUrl = await person.getEpByUrl((argManager!.args as string[])[0], message);
+    let epFromUrl = await person.getEpByUrl(Swessage.args?.get("link")?.value, Swessage);
 
     if (epFromUrl!.success === false) return `Error! ${epFromUrl.error}`;
     else {
-      person = Bobb!.client.crCache[message!.author.id];
+      person = Swessage.Bobb.client.crCache[Swessage.author.id];
 
-      let emb = new Discord.MessageEmbed()
+      let emb = new MessageEmbed()
         .setColor(Math.floor(Math.random() * 0xffffff))
         .setTitle(`${epFromUrl.res.aniTitle} | ${epFromUrl.res.epTitle}`)
         .setDescription(`Episode Number: ${epFromUrl.res.epNum}`)
         .addField(`HLS Stream: `, epFromUrl.res.hlsStream, true)
         .setTimestamp()
-        .setFooter(`Requested by ${message!.author.tag}`);
+        .setFooter(`Requested by ${Swessage.author.tag}`);
       await epFromUrl.message.edit(
-        `Finished! Time taken: ${Bobb!.utils.timeMili(Date.now() - st)}`
+        `Finished! Time taken: ${Swessage.Bobb.utils.timeMilli(Date.now() - st)}`
       );
 
-      const Ret =new Bobb!.Return("message")
-      Ret.setEmbeds([emb]);
-      return Ret;
-    }
-  },
-  async ({ Bobb, interaction, addCD, argslash }: runFnArgs) => {
-  addCD();
-    let st = Date.now();
-    let person = Bobb!.client.crCache[interaction!.user.id];
-    if (!person) {
-      person = Bobb!.client.crCache[interaction!.user.id] = new Bobb!.Crunchy(
-        interaction!.user.id,
-        Bobb
-      );
-       await person.login();
-    }
-    let epFromUrl = await person.getEpByUrl(argslash!.get("link")!.value, interaction);
-
-    if (epFromUrl.success === false) return `Error! ${epFromUrl.error}`;
-    else {
-      person = Bobb!.client.crCache[interaction!.user.id];
-
-      let emb = new Discord.MessageEmbed()
-        .setColor(Math.floor(Math.random() * 0xffffff))
-        .setTitle(`${epFromUrl.res.aniTitle} | ${epFromUrl.res.epTitle}`)
-        .setDescription(`Episode Number: ${epFromUrl.res.epNum}`)
-        .addField(`HLS Stream: `, epFromUrl.res.hlsStream, true)
-        .setTimestamp()
-        .setFooter(
-          `Requested by ${
-            interaction!.user.username
-          }#${interaction!.user.discriminator} | Time taken: ${Bobb!.utils.timeMili(Date.now() - st)}`
-        );
-      person.latest = emb;
-      const Ret =  new Bobb!.Return("interaction")
+      const Ret =new Swessage.Bobb.Return(Swessage.Bobb)
       Ret.setEmbeds([emb]);
       return Ret;
     }
