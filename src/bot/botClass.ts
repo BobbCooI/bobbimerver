@@ -16,7 +16,6 @@ import * as utils from "../../lib/utils/utils";
 import * as constants from "../../lib/utils/constants";
 import { Return } from "../../lib/bot/botTypes";
 import ipc from '../IPC';
-import StatsD from 'hot-shots';
 const { handleButton } = require("../../lib/utils/handlers/button");
 const { handleContextMenu } = require("../../lib/utils/handlers/contextMenu");
 const { handleSlashCommand } = require("../../lib/utils/handlers/slash")
@@ -99,13 +98,6 @@ export default class Bobb {
       handleContextMenu
     };
     this.commandHandler = new commandHandler(this)
-    this.stats = new StatsD({
-      port: 8020,
-      globalTags: ["anime", "misc", "web"],
-      errorHandler: function (error) {
-        console.log("Stats error: " + error);
-      }
-    });
     this.i18n = i18n
     this.cooldowns = new Map();
     this.Return = Return;
