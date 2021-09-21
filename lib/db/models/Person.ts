@@ -34,7 +34,7 @@ export interface iUser {
   ePassword: string;
   hPassword: string;
   UUID: string;
-  dateCreate: string;
+  dateCreate: Date;
 
   // User Anime Watch Stuff for WEBSITE
   episodesFetched?: number;

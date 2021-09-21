@@ -21,7 +21,8 @@ const guildSchema = new Schema({
   disabledCommands: { type: Array, default: [] },
   enabledCommands: { type: Array, default: [] }
 });
-guildSchema.statics.createGuild = async function (guild: Guild): Promise<iGuild> {
+guildSchema.statics.createGuild = async function(guild: Guild): Promise<iGuild> {
+  //@ts-ignore
   return this.create({ guild: guild.name, guildID: guild.id })
 }
 guildSchema.statics.getGuild = async function (id: string, update?: any): Promise<iGuild> {
