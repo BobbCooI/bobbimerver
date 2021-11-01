@@ -10,16 +10,17 @@ import { Message, MessageEmbed } from 'discord.js';
 import { ordinate } from "../utils";
 import { gotOptions } from './common';
 const api = "https://api.vrv.co";
+// hidive was between cruncyroll and mondo before
 const domains = {
   api,
   search: `${api}/disc/public/v1/US/M3/crunchyroll/-/search?`,
-  premSearch: `${api}/disc/public/v1/US/M3/boomerang,cartoonhangover,crunchyroll,hidive,mondo,nicksplat,roosterteeth,vrvselect/-/search?`,
+  premSearch: `${api}/disc/public/v1/US/M3/boomerang,cartoonhangover,crunchyroll,mondo,nicksplat,roosterteeth,vrvselect/-/search?`,
   episodes: `${api}/cms/v2/US/M3/crunchyroll/episodes?`,
-  premEpisodes: `${api}/cms/v2/US/M3/boomerang,cartoonhangover,crunchyroll,hidive,mondo,nicksplat,roosterteeth,vrvselect/episodes?`,
+  premEpisodes: `${api}/cms/v2/US/M3/boomerang,cartoonhangover,crunchyroll,mondo,nicksplat,roosterteeth,vrvselect/episodes?`,
   seasons: `${api}/cms/v2/US/M3/crunchyroll/seasons?`,
-  premSeasons: `${api}/cms/v2/US/M3/boomerang,cartoonhangover,crunchyroll,hidive,mondo,nicksplat,roosterteeth,vrvselect/seasons?`,
+  premSeasons: `${api}/cms/v2/US/M3/boomerang,cartoonhangover,crunchyroll,mondo,nicksplat,roosterteeth,vrvselect/seasons?`,
   stream: `${api}/cms/v2/US/M3/crunchyroll/videos/`,
-  premStream: `${api}/cms/v2/US/M3/boomerang,cartoonhangover,crunchyroll,hidive,mondo,nicksplat,roosterteeth,vrvselect/videos/`,
+  premStream: `${api}/cms/v2/US/M3/boomerang,cartoonhangover,crunchyroll,mondo,nicksplat,roosterteeth,vrvselect/videos/`,
   accountPlayheads: `${api}/core/accounts/8883774/playheads?`
 };
 import Bobb from "../../../src/bot/botClass";
@@ -239,7 +240,7 @@ export default class VRV {
     for (let epNum of eps) {
 
       this.cache[id].selEp = epNum.toString().toLowerCase() == "latest" ?
-        this.cache[id]!.aniEps?.[this.cache[id]!.aniEps.length - 1] :
+        this.cache[id]!.aniEps?.[this.cache[id]!.aniEps?.length - 1] :
         this.cache[id]!.aniEps?.[epNum - 1];
 
       if (!this.cache[id].selEp)

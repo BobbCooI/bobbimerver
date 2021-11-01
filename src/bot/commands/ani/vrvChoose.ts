@@ -37,11 +37,7 @@ export default new Command(
         .setAuthor(Swessage.author.tag, Swessage.author.displayAvatarURL())
         .setDescription(choice.res.slice(start, end).join('\n'))
         .setFooter(
-          `Selection could be ${options.prefix}vrvGetEp \`${
-            choice.res[1].split(" ")[0]
-          }\` or \`${choice.res[1]
-            .split(" ")[0]
-            .slice(0, -2)}\` to get the second episode.`
+          `\"vrvGetEp 2\" to get the second episode.`
         )
         .setTimestamp()
         .setColor(Math.floor(Math.random() * 0xffffff));
