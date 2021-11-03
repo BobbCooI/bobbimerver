@@ -240,7 +240,7 @@ export default class VRV {
     for (let epNum of eps) {
 
       this.cache[id].selEp = epNum.toString().toLowerCase() == "latest" ?
-        this.cache[id]!.aniEps?.[this.cache[id]!.aniEps?.length - 1] :
+        this.cache[id]!.aniEps?.[this.cache?.[id]!.aniEps?.length - 1] :
         this.cache[id]!.aniEps?.[epNum - 1];
 
       if (!this.cache[id].selEp)

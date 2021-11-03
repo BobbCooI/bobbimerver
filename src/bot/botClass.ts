@@ -87,7 +87,7 @@ export default class Bobb {
     // TO DO REFRACTOR DB FUNCTIONS CODE
     this.botStats = Stats;
     this.config = config;
-    this.VRV = new VRV(this, { lang: "enUS", debug: true, premium: true })
+    this.VRV = new VRV(this, { lang: "enUS", debug: false, premium: true })
     this.Funi = Funi;
     this.loggers = loggers(this);
     this.utils = utils;

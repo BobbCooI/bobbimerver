@@ -22,6 +22,7 @@ import { Command } from './Command';
 import { ArgumentType } from 'discord-akairo';
 import { mOrI } from "./botTypes"
 export type getArguments = Map<string, { name: string; type: ArgumentType; value?: string | number | boolean; user?: User }>;
+//@ts-ignore
 export class Swessage extends Message {
   [index: string]: any;
   Bobb: Bobb;
@@ -80,9 +81,11 @@ export class slashMessage {
     if (interaction.options.data.find((opt: CommandInteractionOption) => opt.type == "SUB_COMMAND")) {
       interaction.commandName = `${interaction.commandName
         }-${interaction.options.getSubcommand()}`;
+        //@ts-ignore
       interaction.options = new CommandInteractionOptionResolver(
         Bobb.client,
-        interaction.options.data[0].options ?? []
+        interaction.options.data[0].options ?? [],
+        interaction.options.resolved
       );
     }
     this.guild = Bobb.client.guilds.cache.get(interaction.guildId!);
@@ -94,6 +97,7 @@ export class slashMessage {
     if (this.guild) {
       this.member = interaction.member as GuildMember
     }
+    //@ts-ignore
     this.args = interaction.options;
     this.latestResponse = "@original" as Snowflake;
     if (!this.guild) {

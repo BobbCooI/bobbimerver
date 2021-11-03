@@ -30,3 +30,4 @@ dist/
 config.json
 todo
 updates
+package-lock.json
