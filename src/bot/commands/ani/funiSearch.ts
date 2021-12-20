@@ -45,7 +45,7 @@ export default new Command(
         .setDescription(search.res.join("\n"))
         .setFooter(`Time taken: ${Swessage.Bobb.utils.timeMilli(
           en - startTime
-        )} - You can choose like this: ${Swessage.Bobb.config.prefix}funiChoose 1st`)
+        )} - You can choose like this: ${Swessage.Bobb.config.options.prefix}funiChoose 1st`)
       ]);
       return Ret;
       }

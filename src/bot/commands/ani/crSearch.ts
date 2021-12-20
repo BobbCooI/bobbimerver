@@ -42,7 +42,7 @@ export default new Command({
         .setDescription(search.join("\n"))
         .setFooter(`Time taken: ${Swessage.Bobb.utils.timeMilli(
           en - startTime
-        )} - You can choose like this: ${Swessage.Bobb.config.prefix}crChoose 1st`)
+        )} - You can choose like this: ${Swessage.Bobb.config.options.prefix}crChoose 1st`)
       ]);
   }
 );

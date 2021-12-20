@@ -11,16 +11,18 @@ import { ordinate } from "../utils";
 import { gotOptions } from './common';
 const api = "https://api.vrv.co";
 // hidive was between cruncyroll and mondo before
+// was between boomerang and crunchyroll before
+// roosterteeth was between nicksplat and vrvselect before
 const domains = {
   api,
   search: `${api}/disc/public/v1/US/M3/crunchyroll/-/search?`,
-  premSearch: `${api}/disc/public/v1/US/M3/boomerang,cartoonhangover,crunchyroll,mondo,nicksplat,roosterteeth,vrvselect/-/search?`,
+  premSearch: `${api}/disc/public/v1/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/-/search?`,
   episodes: `${api}/cms/v2/US/M3/crunchyroll/episodes?`,
-  premEpisodes: `${api}/cms/v2/US/M3/boomerang,cartoonhangover,crunchyroll,mondo,nicksplat,roosterteeth,vrvselect/episodes?`,
+  premEpisodes: `${api}/cms/v2/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/episodes?`,
   seasons: `${api}/cms/v2/US/M3/crunchyroll/seasons?`,
-  premSeasons: `${api}/cms/v2/US/M3/boomerang,cartoonhangover,crunchyroll,mondo,nicksplat,roosterteeth,vrvselect/seasons?`,
+  premSeasons: `${api}/cms/v2/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/seasons?`,
   stream: `${api}/cms/v2/US/M3/crunchyroll/videos/`,
-  premStream: `${api}/cms/v2/US/M3/boomerang,cartoonhangover,crunchyroll,mondo,nicksplat,roosterteeth,vrvselect/videos/`,
+  premStream: `${api}/cms/v2/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/videos/`,
   accountPlayheads: `${api}/core/accounts/8883774/playheads?`
 };
 import Bobb from "../../../src/bot/botClass";

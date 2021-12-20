@@ -11,7 +11,7 @@ export default new Command(
     addCD?.();
     let person = Swessage.Bobb.client.crCache[Swessage.author.id];
     if (!person)
-      return `Please start by choosing an anime with the command \`${Swessage.Bobb.config.prefix}crSearch <term(s)>\``;
+      return `Please start by choosing an anime with the command \`${Swessage.Bobb.config.options.prefix}crSearch <term(s)>\``;
     if (!person.latest) {
       return "at least fetch an episode first..";
     }

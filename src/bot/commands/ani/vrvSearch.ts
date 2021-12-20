@@ -44,7 +44,7 @@ export default new Command(
         .setFooter(
           `Time taken: ${Swessage.Bobb.utils.timeMilli(
             end - startTime
-          )} - You can choose like this: ${Swessage.Bobb.config.prefix}vrvChoose 1st`
+          )} - You can choose like this: ${Swessage.Bobb.config.options.prefix}vrvChoose 1st`
         )
     ]);
     

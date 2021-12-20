@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "tsc && node dist/src/index.js",
-    "dev": "nodemon dist/index.js"
+    "dev": "nodemon dist/src/index.js"
   },
   "dependencies": {
     "@sentry/node": "^6.13.3",
