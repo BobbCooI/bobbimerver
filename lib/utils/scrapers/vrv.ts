@@ -1,4 +1,5 @@
-import got, { Options } from "got";
+// import got, {OptionsInit} from "got";
+import got, {OptionsInit} from "got";
 import _ from "lodash";
 import moment from "moment";
 import { vrvOptions } from "./constants";
@@ -41,6 +42,7 @@ export default class VRV {
   // Constructor parameter types
   config: config;
   Bobb: Bobb;
+  lastRequest: Date;
 
   constructor(Bobb: Bobb, config: config) {
     this.tokenSecret = "";
@@ -498,7 +500,12 @@ export default class VRV {
         "VRV Request to"
       );
       //    console.log("Request Options:", gOptions);
-      let res: any = await got(gOptions as Options);
+      if (Date.now() - this.lastRequest.getTime() > 270000) {// 4.5 mintues, resets credential or else requests will be forbidden
+          await this._getCMS()
+      }
+      this.lastRequest = new Date()
+      let res: any = await got(gOptions as OptionsInit);
+   
       if (res?.body?.toString()?.match(/^</)) {
         throw { name: "HTMLError", res };
       }

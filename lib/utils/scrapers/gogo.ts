@@ -5,10 +5,11 @@ const parseGoLink = (url: RegExpExecArray | null): string | null => {
     ? lin.replace(/&/g, "&amp;") //.replace('streaming.php', 'download')
     : null;
 };
-import got from "got";
+import got, {Response} from "got";
 import * as cheerio from "cheerio";
 import * as utils from "../utils";
 export default async function gogoScrap(gogoLink: string) {
+
   let streamSource: string;
   const goDef = /https?:\/\/(gogo-play|streamani)\.net/gm;
   const goStream = /\/\/streamani\.io\/streaming\.php\?([a-zA-Z-\/0-9_=;+%&])+/gm;
@@ -50,8 +51,10 @@ export default async function gogoScrap(gogoLink: string) {
     if (!link) throw new Error("Could not get stream.");
     link = JSON.parse(link);
     streamSource = link.file;
-    let src = (await got(link.file).catch(e => e.toString()));
-    src = src.body || src;
+
+
+    let src = (await got(link.file).catch((e: Error) => e.toString()));
+    src = <string>(src as Response).body || <string>src;
 
     if (src.includes("Forbidden")) {
       let dlPage: any = downloadPage.exec(scriptText);
