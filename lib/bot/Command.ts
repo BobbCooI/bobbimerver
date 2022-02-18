@@ -54,6 +54,7 @@ export class Command extends AkairoCommand {
   attributes: CommandOptions;
   args?: ArgumentOptions[];
   declare channel?: "guild" | "dm";
+  enabled: boolean;
   enableSlashCommand: boolean;
   declare Bobb: Bobb;
   guilds: Snowflake[];
@@ -110,6 +111,7 @@ export class Command extends AkairoCommand {
 
     super(id, attributes);
     this.enableSlashCommand = attributes.enableSlashCommand || false;
+    this.enabled = attributes.enabled ?? true
     this.ephemeral = attributes.ephemeral || false;
     this.premium = attributes.premium || false;
     this.guilds = attributes.guilds || [];
@@ -285,6 +287,7 @@ export interface CommandOptions extends AkairoCommandOptions {
   description: string;
   args?: ArgumentOptions[];
   restrictTo?: "guild" | "dm" | "all";
+  enabled?: boolean;
   enableSlashCommand?: boolean;
   permissions?: string[]
   guilds?: Snowflake[];

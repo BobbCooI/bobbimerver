@@ -17,6 +17,8 @@ export default class CommandHandler {
       let category = (await import(path.join(__dirname, "..", "..", "src", "bot", "commands", categoryPath))).default;//.catch((e: any) => console.log(e))).default;
       category.commands = await Promise.all(category.commands.map(async (command: any): Promise<ContextMenuCommand | Command | undefined> => {
         let elCmd = await command;
+
+        if (!elCmd.default.enabled) return;
         if (elCmd.default instanceof ContextMenuCommand) {
           this.Bobb.contextMenus.push(elCmd.default)
           return;

@@ -20,7 +20,7 @@ export default new Command({
     args: [
         {
             id: "command",
-            type: "command",
+            type: "string", //can get more advanced later to have it check if its command in MESSAGE_CREATE
             default: undefined,
             required: false,
         },
@@ -31,17 +31,19 @@ export default new Command({
     cooldown: 3000
 },
     async({ Swessage, addCD }: executeArgs)  => {
-    if( !Swessage.args) return "no";
+
+        if( !Swessage.args) return "no";
     addCD?.()
     let embed: MessageEmbed;
     if(Swessage.args.get("command")?.value) {
         let command = Swessage.Bobb.cmds.find((c: Command) =>
         (c.name === (Swessage.args?.get("command")!.value as string)?.toLowerCase()) || c.props.aliases?.includes(Swessage.args?.get("command")!.value as string)
       );
-      embed = Swessage.Bobb.utils.constructHelp(command)
-
       if (!command)
         return "I could not find that command. Try running the `help` command by itself and see a list of commands.";
+      embed = Swessage.Bobb.utils.constructHelp(command)
+
+  
     } else {
     let allCommands = Swessage.Bobb.cmds.filter((c: Command) => {
 

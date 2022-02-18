@@ -15,6 +15,7 @@ export default new Command(
         default: undefined,
         required: false,
     }],
+    enabled: false,
     enableSlashCommand: true,
     restrictTo: "all"
   },

@@ -5,15 +5,12 @@ import { handleRes } from "../utils";
 exports.handleSlashCommand = async function (msg: slashMessage) {
     let { command } = msg
 
-
     if (!command) return;
 
     const bypass = command.props.bypassVerification;
 
-    if (command.props.restrictTo == "dm" && !command.guildId) return;
-
     let runner = await this.db.fetchMemberInfo({ discID: msg.author.id });
-    if (!runner && !bypass && !command.guildId)
+    if (!runner && !bypass && !msg.slashCommand.inGuild())
         return command.editReply(
             'Please verify in DMs before using commands.'
         );
@@ -52,6 +49,9 @@ exports.handleSlashCommand = async function (msg: slashMessage) {
         console.log(permissions, command.props?.permissions, 'Error! no perms!');
         // checkPerms.call(this, command, permissions, message);
     }
+    //@ts-ignore
+    if (command.props.restrictTo == "dm" && msg.slashCommand.inGuild()) return handleRes("This command can only be ran inside DMs.", command, "slash", msg);
+
     let res: any = await command.run({
         //@ts-ignore
         Swessage: msg,

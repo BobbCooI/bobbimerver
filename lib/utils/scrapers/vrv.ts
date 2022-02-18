@@ -1,5 +1,4 @@
-// import got, {OptionsInit} from "got";
-import got, {OptionsInit} from "got";
+import got, { Options } from "got";
 import _ from "lodash";
 import moment from "moment";
 import { vrvOptions } from "./constants";
@@ -69,6 +68,7 @@ export default class VRV {
     this.cache = {
 
     }
+    this.lastRequest = new Date()
   }
   async init(): Promise<VRVret | void> {
     const page = await got("https://vrv.co");
@@ -125,14 +125,20 @@ export default class VRV {
   async search(query: string, id: string): Promise<VRVret> {
     if (!this.cmsSigning.Policy) {
       let cmsSigns = await this._getCMS();
-      if (cmsSigns.success == false)
-        return { success: false, error: cmsSigns.error };
+      let retries = 0
+      while (cmsSigns.success === false) {
+        cmsSigns = await this._getCMS()
+        retries += 1
+        if (retries >= 15) break;
+      }
+ 
+        if (retries >= 15) return { success: false, error: cmsSigns.error };
     }
     let s = await this._vGetData({
       url: this.config.premium ? domains.premSearch : domains.search,
       note: `Searching for ${query}`,
       type: "disc",
-      query: new URLSearchParams([["q", query], ["n", "6"]]).toString()
+      query: new URLSearchParams([["q", query], ["n", "6"]]).toString(),
     });
     if (!s.success)
       return { success: false, error: "Error while searching for anime" };
@@ -151,7 +157,7 @@ export default class VRV {
         url: this.config.premium ? domains.premSeasons : domains.seasons,
         note: `Getting seasons for ${ani.title}`,
         type: "cms",
-        query: new URLSearchParams({ series_id: ani.id }).toString()
+        query: new URLSearchParams({ series_id: ani.id }).toString(),
       });
       if (!seasons.success) res.push(`${ani.title} • Unable to get seasons..`);
 
@@ -214,7 +220,7 @@ export default class VRV {
       url: this.config.premium ? domains.premEpisodes : domains.episodes,
       note: `Getting episodes for ${this.cache[id].choiceTitle}`,
       type: "cms",
-      query: new URLSearchParams({ season_id: this.cache[id].choiceID! }).toString()
+      query: new URLSearchParams({ season_id: this.cache[id].choiceID! }).toString(),
     });
     if (!episodes.success)
       return {
@@ -256,7 +262,7 @@ export default class VRV {
       let streams = await this._vGetData({
         url: `${this.config.premium ? domains.premStream : domains.stream}${this.cache[id]!.selEp?.split("　•　")[2]}/streams?`,
         note: `Getting streams for ${this.cache[id]!.selEp?.split("　•　")[1]}`,
-        type: "cms"
+        type: "cms",
       });
       if (!streams.success)
         return {
@@ -317,7 +323,7 @@ export default class VRV {
         email: this.config.email!,
         password: this.config.password!
       },
-      type: "oauth"
+      type: "oauth",
     });
     if (!tokenAuth.success) {
       return {
@@ -332,13 +338,15 @@ export default class VRV {
   }
 
   async _getCMS(): Promise<VRVret> {
+    this.lastRequest = new Date()
     let cmsCreds = await this._vGetData({
       path: "index",
       note: "Getting CMS Token Credentials",
       type: "oauth"
     });
+  
     if (!cmsCreds.success)
-      return { success: false, error: "Trouble fetching cms keys. Simply retry :}" };
+      return { success: false, error: "Trouble fetching cms keys. Simply retry :} If still doesn't work contact developer to fix" };
     cmsCreds = cmsCreds.res.body;
     if (!_.isEmpty(cmsCreds.cms_signing)) return cmsCreds.cms_signing;
     for (let signing_policy of cmsCreds.signing_policies || []) {
@@ -367,7 +375,10 @@ export default class VRV {
         if (signName && value) this.accSigning[signName] = value;
       }
     }
-    if (this.cmsSigning && this.discSigning) return { success: true };
+    if (this.cmsSigning && this.discSigning) {
+      console.log("CMS credentials successfully retrieved.")
+      return { success: true };
+    }
     else return { success: false, error: "Could not get cms/disc signing keys." }
   }
   async _vGetData(options: getOptions): Promise<VRVret> {
@@ -500,12 +511,16 @@ export default class VRV {
         "VRV Request to"
       );
       //    console.log("Request Options:", gOptions);
-      if (Date.now() - this.lastRequest.getTime() > 270000) {// 4.5 mintues, resets credential or else requests will be forbidden
-          await this._getCMS()
+      if (Date.now() - this.lastRequest.getTime() > 270000) {// 4.5 mintues (270k ms), resets credential or else requests will be forbidden
+        let cms = await this._getCMS()
+        while (cms.success === false) {
+          cms = await this._getCMS()
+        }
       }
       this.lastRequest = new Date()
-      let res: any = await got(gOptions as OptionsInit);
-   
+
+      let res: any = await got(gOptions as Options);
+
       if (res?.body?.toString()?.match(/^</)) {
         throw { name: "HTMLError", res };
       }

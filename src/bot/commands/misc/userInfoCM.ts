@@ -3,7 +3,7 @@ import ContextMenuCommand from "../../commandTypes/ContextMenu"
 import { runFnArgs } from '../../../../lib/bot/botTypes';
 
 export default new ContextMenuCommand({
-    name: "User Info",
+    name: "PFP",
     type: "USER"
 }, async ({ Bobb, menu }: runFnArgs) => {
     const targetUser = menu?.client.users.resolve(menu.targetId)!

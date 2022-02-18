@@ -47,7 +47,7 @@ exports.handle = async function (rawMsg: RawMessageData): Promise<Message | unde
   message.args = new Map()
   if (command.args) {
     for (let [index, arg] of command.args!.entries()) {
-
+      console.log(index,arg)
       let elArg = false
         if (arg.id && arg.type == "string") {
           if (!message.cleanArgs[index] && arg.required) return message.channel.send({ embeds: [constructHelp(command)], content: "Wrong usage!" })
@@ -55,7 +55,7 @@ exports.handle = async function (rawMsg: RawMessageData): Promise<Message | unde
             {
               name: arg.id!,
               type: arg.type as AkairoArgumentType || "string",
-              value: message.cleanArgs[index]
+              value: command.args.length === 1 ? message.cleanArgs.join(" ") : message.cleanArgs[index]
             });
             elArg = true;
         } else if (arg.id && arg.type == 'user') {
@@ -115,6 +115,7 @@ exports.handle = async function (rawMsg: RawMessageData): Promise<Message | unde
 
   /* Handle actual function/command calling */
   // @ts-ignore
+  
   let res = await command.run({ Swessage: message, addCD })
 
   return handleRes(res, command, "message", message)

@@ -18,7 +18,7 @@ export interface getOptions {
     password: string;
   };
   body?: string;
-  type?: string;
+  type?: "oauth" | "disc" | "cms";
   query?: string;
 }
 export interface VRVret extends ret {

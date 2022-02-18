@@ -16,6 +16,7 @@ exports.handle = async function (interaction: InteractionTypes): Promise<any> {
 			await interaction.editReply(`u be roll a ${Math.floor(Math.random() * 6) + 1}`);
 		}
 	}
+
 	if (interaction.isCommand()) {
 		await interaction.deferReply()
 		await this.client.channels.fetch(interaction.channelId)

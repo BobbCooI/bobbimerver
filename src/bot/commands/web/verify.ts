@@ -9,6 +9,7 @@ export default new Command(
       Permissions.FLAGS.SEND_MESSAGES,
       Permissions.FLAGS.EMBED_LINKS,
     ],
+    enabled: false,
     enableSlashCommand: true,
     args: [
       {
