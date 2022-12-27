@@ -11,7 +11,7 @@ import Stats from "../lib/db/models/Stats";
 import Api from './webApi';
 import config from "./config.json";
 import cookieParser from 'cookie-parser';
-import * as Sentry from "@sentry/node";
+//import * as Sentry from "@sentry/node";
 
 export default async function mainLaunch() {
 
@@ -73,9 +73,10 @@ export default async function mainLaunch() {
 
 
 }
-//mainLaunch();
+mainLaunch();
 
 
+/* 
 Sentry.init({
   dsn: process.env.sentryURL!,
   // Set tracesSampleRate to 1.0 to capture 100%
@@ -98,3 +99,4 @@ setTimeout(() => {
     transaction.finish();
   }
 }, 99);
+*/

@@ -130,7 +130,7 @@ export default class Bobb {
   async ready(): Promise<void> {
     let start = Date.now()
     await this.commandHandler.loadMessageCommands(false);
-  //  await this.commandHandler.loadInteractions({ guildId: "699487357400907867", cleanAll: true });
+    await this.commandHandler.loadInteractions({ guildId: "699487357400907867", cleanAll: true });
     const doneLoadCommands = Date.now() - start;
     const { client } = this;
 

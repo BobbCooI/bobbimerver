@@ -9,7 +9,7 @@ import {
   Permissions,
   Snowflake,
 } from "discord.js";
-import { ApplicationCommandOptionType } from "discord-api-types";
+import { ApplicationCommandOptionType } from "discord-api-types/payloads";
 import Bobb, { extClient } from "../../src/bot/botClass"
 import { executeArgs, ArgumentOptions } from "./botTypes";
 

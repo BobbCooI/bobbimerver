@@ -121,6 +121,7 @@ export class Return {
 
     } else throw `invalid number of buttons (${btns.length})`;
     const btnGroups = _.chunk(btns, 5)
+    //@ts-ignore
     this.components = this.components.map((_mar, ind) => new MessageActionRow({ components: btnGroups[ind] }))
     return btns;
   }

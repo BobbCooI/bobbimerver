@@ -44,8 +44,6 @@ router.use(
     }
   }
 );
-import gogo from "./gogo";
 import geteps from "./geteps";
-router.use("/gogo", gogo);
 router.use("/geteps",geteps);
 export default router;
