@@ -256,7 +256,7 @@ export default class CommandHandler {
    * @return {Promise<void>}
    */
   async cleanAndLoadInts(categoriesToLoad: Array<COMMAND_CATEGORIES>) {
-    const jsonizedCmds = await this.convertCommandsToJSON(categoriesToLoad);
+    const jsonizedCmds = this.convertCommandsToJSON(categoriesToLoad);
     await this.removeAllInteractions();
     await this.loadInteractions(jsonizedCmds);
   }
