@@ -1,7 +1,7 @@
 const funi = require("./funix.js");
 import { ordinate } from "../utils";
 import { funiOptions } from "./constants";
-import Bobb from "../../../src/bot/botClass";
+import Bobb from "@src/bot/botClass";
 import { ret } from "./common";
 export interface config {
   quality: number;

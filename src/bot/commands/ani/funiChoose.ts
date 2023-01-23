@@ -1,51 +1,51 @@
-import { options } from '../../../config.json';
-import { executeArgs } from "lib/bot/botTypes";
+import { executeArgs } from "lib/bot/discordThings";
 import { Command } from "../../../../lib/bot/Command";
-import {Permissions, MessageEmbed} from "discord.js"
+import Discord from "discord.js";
 export default new Command(
   {
-    name: "funichoose",
-    description: `2/3 - Choose the anime from ${options.prefix}funiSearch. Ordinal or number corresponding to the choices.`,
-    clientPermissions: [
-        Permissions.FLAGS.SEND_MESSAGES,
-        Permissions.FLAGS.EMBED_LINKS,
-    ],
-    enabled:false,
-    enableSlashCommand: false,
-    args: [
-      {
-        id: "selection",
-        type: "number",
-        description: "List a number from the choices you received.",
-        default: undefined,
-        required: true
-      }
-    ],
-    restrictTo: "all",
-    cooldown: 5 * 1000
+    category: "ani",
+    slashOptions: {
+      isSubCommand: true,
+      groupName: "funi",
+      commandOptions: new Discord.SlashCommandSubcommandBuilder()
+        .setName("choose")
+        .setDescription(
+          `2/3 - Choose the anime from /funi search. Number corresponding to the choices.`
+        )
+        .addIntegerOption((option) =>
+          option
+            .setName("selection")
+            .setDescription("singular name you want")
+            .setRequired(true)
+        ),
+    },
+    enabled: false,
+    restrictTo: "guild",
+    cooldown: 5 * 1000,
   },
-  async ({ Swessage, addCD }: executeArgs) => {
-    let person = Swessage.Bobb.client.funiCache[Swessage.author.id];
+  async ({ slashInt, addCD }: executeArgs) => {
+    let person = slashInt.Bobb.client.funiCache[slashInt.slash.user.id];
     if (!person)
-      return `Please start by choosing an anime with the command \`${options.prefix}funiSearch <term(s)>\``;
-    let choice = person.choose(Swessage.args?.get("selection")?.value || '');
+      return `Please start by choosing an anime with the command /funi search <term(s)>`;
+    let choice = person.choose(slashInt.slash.options.getInteger("selection"));
 
     if (choice!.success === false) return `Error: ${choice.error}`;
-  addCD?.();
-    person = Swessage.Bobb.client.funiCache[Swessage.author.id];
-    let emb = new MessageEmbed()
+    addCD?.();
+    person = slashInt.Bobb.client.funiCache[slashInt.slash.user.id];
+    let emb = new Discord.EmbedBuilder()
       .setTitle(person.choiceTitle)
       .setDescription(`Success! The title ID is ${choice.res}`)
-      .addField(
-        `Final step command: ${options.prefix}funiGetEp 2`,
-        "This would fetch the 2nd episode of the anime."
-      )
-      .setFooter(
-        "Make sure the selected anime episode of the season is correct!"
-      )
+      .addFields({
+        name: `Final step command: /funi getep 2`,
+        value: "This would fetch the 2nd episode of the anime.",
+      })
+      .setFooter({
+        text: "Make sure the selected anime episode of the season is correct!",
+      })
       .setTimestamp()
       .setColor(Math.floor(Math.random() * 0xffffff));
-    const Ret =new Swessage.Bobb.Return(Swessage.Bobb)
-      Ret.setEmbeds([emb]);
+    const Ret = new slashInt.Bobb.Return(slashInt.Bobb);
+    Ret.setEmbeds([emb]);
     return Ret;
-  })
+  }
+);

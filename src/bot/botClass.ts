@@ -1,66 +1,54 @@
 import messageCollector from "../../lib/utils/handlers/messageCollector";
 import path from "path";
-import Discord from "discord.js";
-import ContextMenuCommand from "./commandTypes/ContextMenu";
+import Discord, { ActivityType } from "discord.js";
+import {Configuration, OpenAIApi} from "openai";
 /** Class Imports **/
 import Person from "../../lib/db/models/Person";
 import Guild from "../../lib/db/models/Guild";
 import botDB from "../../lib/bot/botDB";
 import Stats from "../../lib/db/models/Stats";
 import config from "../config.json";
-import botPackage from "../../package.json";
 import VRV from "../../lib/utils/scrapers/vrv";
 import Funi from "../../lib/utils/scrapers/funiClass";
 import loggers from "../../lib/utils/logger";
 import * as utils from "../../lib/utils/utils";
 import * as constants from "../../lib/utils/constants";
-import { Return } from "../../lib/bot/botTypes";
-import ipc from '../IPC';
-const { handleButton } = require("../../lib/utils/handlers/button");
-const { handleContextMenu } = require("../../lib/utils/handlers/contextMenu");
+import { Return } from "../../lib/bot/discordThings";
 const { handleSlashCommand } = require("../../lib/utils/handlers/slash")
-import * as i18next from "i18next";
 import { Command } from "../../lib/bot/Command";
 import commandHandler from "../../lib/bot/CommandHandler";
 
-// this shit has some weird import fuckery, this is the only way I can use it. <--- from fire bot. thx
-const i18n = i18next as unknown as typeof i18next.default;
 export class extClient extends Discord.Client {
   crCache: any;
   vrvCache: any;
   funiCache: any;
   opts: any;
-  prefix: string;
   owners: Array<Discord.Snowflake>
   constructor(opts: any) {
     super(opts);
     this.crCache = {};
     this.vrvCache = {};
     this.funiCache = {};
-    this.prefix = opts.prefix;
     this.owners = config.options.owners;
+
   }
 }
 /** Class Imports **/
 
 export default class Bobb {
   client: extClient;
-  cmds: Array<Command>
-  slashCmds: Array<string>;
-  contextMenus: Array<ContextMenuCommand>
+  slashCommands: Array<Command>;
   mongo: any;
   db: any;
   botStats: any;
   config: any;
-  Crunchy: any;
   Funi: any;
   VRV: any;
   loggers: any;
   utils: any;
+  openai: OpenAIApi;
   handlers: {
-    handleButton: typeof handleButton,
     handleSlashCommand: typeof handleSlashCommand,
-    handleContextMenu: typeof handleContextMenu
   };
   commandHandler: commandHandler;
   constants: any;
@@ -69,16 +57,11 @@ export default class Bobb {
   mentionRX: RegExp;
   messageCollector: any;
   Return: typeof Return;
-  ipc: any;
-  i18n: typeof i18next.default;
 
   constructor(client: extClient) {
     /* declaring */
     this.client = client;
-    this.ipc = new ipc;
-    this.cmds = [];
-    this.slashCmds = [];
-    this.contextMenus = [];
+    this.slashCommands = [];
     this.mongo = {
       Person,
       Guild
@@ -92,13 +75,12 @@ export default class Bobb {
     this.loggers = loggers(this);
     this.utils = utils;
     this.constants = constants;
+
+    this.openai = new OpenAIApi( new Configuration({ apiKey: config.OPENAI_API_KEY}))
     this.handlers = {
-      handleButton,
       handleSlashCommand,
-      handleContextMenu
     };
     this.commandHandler = new commandHandler(this)
-    this.i18n = i18n
     this.cooldowns = new Map();
     this.Return = Return;
     /* declaring */
@@ -129,8 +111,12 @@ export default class Bobb {
 
   async ready(): Promise<void> {
     let start = Date.now()
-    await this.commandHandler.loadMessageCommands(false);
-    await this.commandHandler.loadInteractions({ guildId: "699487357400907867", cleanAll: true });
+    await this.commandHandler.populateCommands();
+
+    // ONLY RUN THIS WHEN THERE IS A CHANGE TO THE SLASH COMMANDS
+    //await this.commandHandler.cleanAndLoadInts(["all"]);
+  
+
     const doneLoadCommands = Date.now() - start;
     const { client } = this;
 
@@ -139,8 +125,8 @@ export default class Bobb {
       `Ready: ${process.memoryUsage().rss / 1024 / 1024}MB`
     );
     await client.user!.setActivity(
-      `bro`,
-      { type: "WATCHING" }
+      `with jit`,
+      { type: ActivityType.Competing }
     );
     const doneLog = Date.now() - start
     start = Date.now()
@@ -176,43 +162,4 @@ export default class Bobb {
     }
   }
 
-  createIPC(): void {
-    this.ipc.register('reloadCommands', () => {
-      for (const path in require.cache) {
-        if (path.includes('bot/commands')) {
-          delete require.cache[path];
-        }
-      }
-      this.loggers.log('Commands reloaded probably');
-
-      this.cmds = [];
-      this.commandHandler.loadMessageCommands();
-      this.commandHandler.loadInteractions({});
-
-    });
-    this.ipc.register('reloadMost', () => {
-      for (const path in require.cache) {
-        if (path.includes('utils') || path.includes('bot/commands') || path.includes('bot/commandTypes') || path.includes('bot/events')) {
-          delete require.cache[path];
-        }
-      }
-      this.cmds = [];
-      this.commandHandler.loadMessageCommands();
-      this.commandHandler.loadInteractions({});
-      //   this.loadUtils();
-      this.loggers.log('Most things reloaded probably');
-    });
-    this.ipc.register('reloadConfig', () => {
-      for (const path in require.cache) {
-        if (path.includes('config')) {
-          delete require.cache[path];
-        }
-      }
-      // this.config = require('./config.json');
-      this.loggers.log('Config reloaded probably');
-    });
-  }
-  get package() {
-    return botPackage
-  }
 }

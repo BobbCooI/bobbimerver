@@ -1,14 +1,15 @@
+import "module-alias/register";
+
 import express, { Request, Response } from "express";
 const app = express();
 import db from "../lib/db/mongoose";
 import Bobb, { extClient } from "./bot/botClass";
-import { Intents } from 'discord.js';
-
+import { GatewayIntentBits } from 'discord.js';
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import Stats from "../lib/db/models/Stats";
-import Api from './webApi';
+import Api from './webApi';2
 import config from "./config.json";
 import cookieParser from 'cookie-parser';
 //import * as Sentry from "@sentry/node";
@@ -20,19 +21,18 @@ export default async function mainLaunch() {
 
  const client = new extClient({
     intents: [
-      Intents.FLAGS.GUILDS,
-      Intents.FLAGS.GUILD_MEMBERS,
-      Intents.FLAGS.GUILD_BANS,
-      Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-      Intents.FLAGS.GUILD_INTEGRATIONS,
-      Intents.FLAGS.GUILD_WEBHOOKS,
-      Intents.FLAGS.GUILD_PRESENCES,
-      Intents.FLAGS.GUILD_MESSAGES,
-      Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-      Intents.FLAGS.DIRECT_MESSAGES,
-      Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildBans,
+      GatewayIntentBits.GuildEmojisAndStickers,
+      GatewayIntentBits.GuildIntegrations,
+      GatewayIntentBits.GuildWebhooks,
+      GatewayIntentBits.GuildPresences,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.GuildMessageReactions,
+      GatewayIntentBits.DirectMessages,
+      GatewayIntentBits.DirectMessageReactions,
     ],
-    prefix: config.options.prefix
   });
 
   client.login(config.botToken!);

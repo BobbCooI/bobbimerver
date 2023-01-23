@@ -1,28 +1,33 @@
-import Discord from "discord.js";
-import { executeArgs } from "lib/bot/botTypes";
+import Discord, { SlashCommandSubcommandBuilder } from "discord.js";
+import { executeArgs } from "lib/bot/discordThings";
 import { Command } from "../../../../lib/bot/Command";
+
 export default new Command(
   {
-    name: "vrvsearch",
-    description: "1/3: Search for an anime of your choice with VRV.",
-    enableSlashCommand: true,
-      args: [
-        {
-          id: "search_query",
-          description: "search query",
-          type: "string",
-          default: undefined,
-          required: true
-        }
-      ],
-    cooldown: 8 * 1000
+    category: "ani",
+
+    slashOptions: {
+      groupName: "vrv",
+      isSubCommand: true,
+      commandOptions: new SlashCommandSubcommandBuilder()
+        .setName("search")
+        .setDescription("1/3: Search for an anime of your choice with VRV.")
+        .addStringOption((option) =>
+          option
+            .setName("query")
+            .setDescription("what you wanna search up")
+            .setRequired(true)
+        ),
+    },
+    restrictTo: "guild",
+    cooldown: 8 * 1000,
   },
-  async ({ Swessage, addCD }: executeArgs) => {
-  
-  if(!(Swessage.args?.get("search_query")?.value)) return `atleast give me something to search up 🙄`
+  async ({ slashInt, addCD }: executeArgs) => {
+    if (!slashInt.slash.options.getString("query"))
+      return `atleast give me something to search up 🙄`;
     addCD?.();
-        let startTime = Date.now();
-/*let base =Bobb!.client.vrvCache[message!.author.id];
+    let startTime = Date.now();
+    /*let base =Bobb!.client.vrvCache[message!.author.id];
     if (!base) {
      base = (Bobb!.client.vrvCache[message!.author.id] = new Bobb!.VRV(
       message!.author.id,
@@ -32,21 +37,25 @@ export default new Command(
     let auth = await base.auth();
     if (!auth!.success) return `Oh no! ${auth.error}`;
     }  */
-    Swessage.Bobb.VRV.initPerson(Swessage.author.id);
-    let search = await Swessage.Bobb.VRV.search(Swessage.args?.get("search_query")?.value, Swessage.author.id);
+    slashInt.Bobb.VRV.initPerson(slashInt.slash.user.id);
+    let search = await slashInt.Bobb.VRV.search(
+      slashInt.slash.options.get("query"),
+      slashInt.slash.user.id
+    );
     let end = Date.now();
     if (search.success === false) return search.error;
-    const Ret =  new Swessage.Bobb.Return(Swessage.Bobb)
+    const Ret = new slashInt.Bobb.Return(slashInt.Bobb);
     Ret.setEmbeds([
-      new Discord.MessageEmbed()
+      new Discord.EmbedBuilder()
         .setTitle("Choices")
         .setDescription(search.res.join("\n"))
-        .setFooter(
-          `Time taken: ${Swessage.Bobb.utils.timeMilli(
+        .setFooter({
+          text: `Time taken: ${slashInt.Bobb.utils.timeMilli(
             end - startTime
-          )} - You can choose like this: ${Swessage.Bobb.config.options.prefix}vrvChoose 1st`
-        )
+          )} - You can choose like this: /vrv choose 1st`,
+        }),
     ]);
-    
+
     return Ret;
-})
+  }
+);

@@ -1,8 +1,8 @@
-import Bobb from '../../src/bot/botClass';
-import { iUser } from '../db/models/Person';
+import Bobb from '@src/bot/botClass';
+import { iUser } from '@lib/db/models/Person';
 import Discord from 'discord.js';
-import { Swessage, slashMessage } from './discordExtensions';
 import { Command } from './Command';
+import { slashInteraction } from './discordThings';
 
 export default (Bobb: Bobb) => ({
   async fetchMemberInfo(search: any): Promise<iUser> {
@@ -21,17 +21,17 @@ export default (Bobb: Bobb) => ({
     if (dbUser?.powerful || user.id == "443145161057370122") return true;
     else return false;
   },
-  async updateStats(this: Bobb, message: Swessage | slashMessage, lastCmd?: number) {
-    const user = message.author
+  async updateStats(this: Bobb, message:slashInteraction, lastCmd?: number) {
+    const user = message.slash.user;
 
-    console.log(`${message instanceof Swessage ? "Message" : "Interaction"} command: ${message.command?.props.name} ran by ${user.tag}:${user.id}`)
+    console.log(`Slash command: ${message.command.name} ran by ${user.tag}:${user.id}`)
 
     if (lastCmd && Date.now() - lastCmd < 500) {
       await this.db.addSpam(user.id);
     }
     await this.botStats.findOneAndUpdate(
       { _id: '60070be0f12d9e041931de68' },
-      { $inc: { [message instanceof Swessage ? "commands" : "slashCommands"]: 1 } }
+      { $inc: { "slashCommands": 1 } }
     );
     await this.db.updateMember(user.id, {
       $inc: { cmdsRan: 1 },
@@ -40,12 +40,12 @@ export default (Bobb: Bobb) => ({
   },
 
   async updateCooldowns(command: string, userID: string): Promise<any> {
-    const pCommand = Bobb.cmds.find((c: Command) => c.attributes.name.includes(command.toLowerCase()));
+    const pCommand = Bobb.slashCommands.find((c: Command) => c.name.includes(command.toLowerCase()));
 
     if (!pCommand) {
       return;
     }
-    let cooldown = pCommand.props.cooldown || 5000;
+    let cooldown = pCommand.cooldown || 5000;
 
     const profile = await this.getCooldowns(userID, false);
     if (!profile) {
@@ -67,8 +67,8 @@ export default (Bobb: Bobb) => ({
       });
     }
   },
-  async checkCooldowns(this: Bobb, message: Swessage | slashMessage, command: Command) {
-    const user = message.author
+  async checkCooldowns(this: Bobb, message:slashInteraction, command: Command) {
+    const user = message.slash.user;
 
     const cooldown = await this.db.getSpecificCooldown(
       command,
@@ -79,7 +79,7 @@ export default (Bobb: Bobb) => ({
       const waitTime = (cooldown - Date.now()) / 1000;
       let cooldownWarning = `**time left until you can run this command again:** `;
 
-      const cooldownMessage = new Discord.MessageEmbed()
+      const cooldownMessage = new Discord.EmbedBuilder()
         .setColor(this.utils.randomColor())
         .setTitle('chill 😩')
         .setDescription(`${cooldownWarning} ${(waitTime > 60
@@ -87,21 +87,19 @@ export default (Bobb: Bobb) => ({
           : `__${waitTime.toFixed(1)} seconds__`)}\n\nok!`);
 
       await this.db.addSpam(user.id);
-      message instanceof Swessage ?
-        await message.channel.send({ embeds: [cooldownMessage] }) :
-        await message.slashCommand.editReply({ embeds: [cooldownMessage] });
+        await message.slash.editReply({ embeds: [cooldownMessage] });
 
       return true;
     }
     return false;
   },
   async createCooldowns(command: any, userID: string): Promise<any> {
-    const pCommand = Bobb.cmds.find((c: Command) => c.attributes.name.includes(command.toLowerCase()));
+    const pCommand = Bobb.slashCommands.find((c: Command) => c.name.includes(command.toLowerCase()));
 
     if (!pCommand) {
       return;
     }
-    const cooldown = pCommand.props.cooldown;
+    const cooldown = pCommand.cooldown;
     if (cooldown) {
       return Bobb.cooldowns.set(userID, {
         id: userID,
@@ -136,12 +134,12 @@ export default (Bobb: Bobb) => ({
     if (!profile) {
       return null;
     }
-    const cooldowns = profile.cooldowns.find((item: any) => item[command.props.name]);
+    const cooldowns = profile.cooldowns.find((item: any) => item[command.name]);
     if (!cooldowns) {
       return null;
     }
-    return profile.cooldowns.find((item: any) => item[command.props.name])[
-      command.props.name
+    return profile.cooldowns.find((item: any) => item[command.name])[
+      command.name
     ];
   },
   async addSpam(id: string): Promise<void> {

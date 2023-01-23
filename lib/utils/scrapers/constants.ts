@@ -1,4 +1,4 @@
-import config from "../../../src/config.json"
+import config from "@src/config.json"
 const funiOptions = {
   quality: 10,
   server: 1,
@@ -10,8 +10,6 @@ const funiOptions = {
   enSub: true
 };
 const crOptions = {
-  user: config.crEmail,
-  pass: config.crPass,
   quality: "max",
   server: 1,
   suffix: "SIZEp",

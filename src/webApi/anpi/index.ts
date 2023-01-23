@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 const router = express.Router();
 import apiKeys from "../secret";
-import {verify} from "../../../lib/utils/utils";
+import {verifyWeb} from "../../../lib/utils/utils";
 import config from "../../config.json"
 router.use(
   "/",
@@ -12,7 +12,7 @@ router.use(
     if (token == null)
       return res.send({ success: false, error: "Unauthorized..." });
     try {
-      let isAuth = await verify(token);
+      let isAuth = await verifyWeb(token);
 
       if (apiKeys.has(apiKey) && isAuth) {
         next();

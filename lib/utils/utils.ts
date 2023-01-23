@@ -1,13 +1,9 @@
 import CryptoJS from "crypto-js";
-import axios from "axios";
 import jwt from "jsonwebtoken";
 import Discord from "discord.js";
-import fs from 'fs';
-import config from "../../src/config.json";
-import { Command } from "../../lib/bot/Command";
-import { Return } from "../../lib/bot/botTypes";
-import _ from "lodash"
-import { Swessage } from "../../lib/bot/discordExtensions";
+import config from "@src/config.json";
+
+
 export function ordinate(i: number): string {
   var j = i % 10,
     k = i % 100;
@@ -49,7 +45,7 @@ export async function createWebhook(opts: webhook): Promise<void> {
     .slice(1, 5)
     .join(" ");
 
-  const embed = new Discord.MessageEmbed()
+  const embed = new Discord.EmbedBuilder()
     .setTitle(`[${opts.type}] | Date: ${date}`)
     .setDescription(opts.embedContent)
     .setColor("#0099ff");
@@ -62,7 +58,8 @@ export async function createWebhook(opts: webhook): Promise<void> {
   };
   await webhookClient.send(toSend);
 }
-export function verify(token: string): Promise<boolean> {
+
+export function verifyWeb(token: string): Promise<boolean> {
   return new Promise(function (resolve, reject) {
     jwt.verify(token, process.env.jwtAccessSecret!, function (err, decode) {
       if (err) {
@@ -73,7 +70,8 @@ export function verify(token: string): Promise<boolean> {
       resolve(!!decode);
     });
   });
-}
+};
+
 export async function asyncForEach(
   array: [],
   callback: (item: any, ind: number, arr: []) => any
@@ -124,6 +122,7 @@ export function generateUUID(): string {
 
   return uuid;
 }
+
 export function chunkSubstr(str: string, size: number): Array<string> {
   const numChunks = Math.ceil(str.length / size);
   const chunks = new Array(numChunks);
@@ -134,22 +133,12 @@ export function chunkSubstr(str: string, size: number): Array<string> {
 
   return chunks;
 }
-export function moveImg(img: string, fileTo: string): void {
-  var data = img.replace(/^data:image\/\w+;base64,/, "");
-  var buf = Buffer.from(data, "base64");
-  fs.writeFileSync(fileTo, buf);
-}
+
 export function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
-export const cmdReq = axios.create({
-  baseURL: `https://discord.com/api/v8/applications/${process.env.appID}/guilds/${process.env.guildID}/commands`,
-  responseType: "json",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bot ${process.env.botToken}`
-  }
-});
+
+
 export function randomNumber(min: number = 0, max: number = 100): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -176,27 +165,20 @@ export function makeID(length: number): string {
   }
   return result;
 }
-export function unembedify(embed: Discord.MessageEmbed, content?: string) {
+export function unembedify(embed: Discord.EmbedBuilder, content?: string) {
   let embedString = "";
-  if (embed.author) embedString += `**${embed.author.name}**\n`;
-  if (embed.title) embedString += `**${embed.title}**\n`;
-  if (embed.description) embedString += `${embed.description}\n`;
-  for (const field of embed.fields || []) {
+  const data = embed.data
+  if (data.author) embedString += `**${data.author.name}**\n`;
+  if (data.title) embedString += `**${data.title}**\n`;
+  if (data.description) embedString += `${data.description}\n`;
+  for (const field of data.fields || []) {
     embedString += `\n**${field.name}**\n${field.value}\n`;
   }
-  if (embed.footer) embedString += `\n${embed.footer.text}`;
+  if (data.footer) embedString += `\n${data.footer.text}`;
   return `${content || ""}\n${embedString || "Empty embed"}`; // Returns a string
 }
 
-export function constructHelp(command: Command) {
-  let embed = new Discord.MessageEmbed()
-  embed.setTitle(`**${command.props.name}**`)
-  embed.setDescription(`${command.props.description}`)
-  embed.setTimestamp()
-  embed.addField("> Aliases", command.aliases.join(", "), false)
-  embed.addField("> Usage", `c!${command.props.name}`, false)
-  return embed
-}
+
 export function slugify(str: string): string {
   const a =
     "àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;";
@@ -264,19 +246,3 @@ export function parseTime(s: number): string {
   )} Seconds`;
 }
 
-export function handleRes(res: any, command: Command, commandType: string, message: Swessage) {
-  if (!res) {
-    return;
-  }
-  if (res instanceof Return) {
-    if (res.Paginate) return;
-
-    if (_.isEmpty(res)) throw new Error(`No content to send back for ${commandType}: ${command.props.name} ?`)
-    res = res.resolvedMessageOpts();
-  } else if (typeof res == "string") {
-    res = { content: res }
-  } else {
-    throw new Error(`What kind of return for ${command.props.name}? I received ${res} type ${typeof res}`)
-  }
-  return message.send(res).catch(console.log)
-}

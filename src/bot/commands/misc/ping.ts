@@ -1,20 +1,22 @@
-import { executeArgs } from "lib/bot/botTypes";
+import { executeArgs } from "lib/bot/discordThings";
 import { Command } from "../../../../lib/bot/Command";
-import { Permissions } from "discord.js"
+import Discord from "discord.js";
 export default new Command(
   {
-    name: "ping",
-    description: "check bot ping",
-    clientPermissions: [
-      Permissions.FLAGS.SEND_MESSAGES,
-      Permissions.FLAGS.EMBED_LINKS,
-    ],
-    aliases: ["pong"],
-    enableSlashCommand: true,
-    restrictTo: "all"
+    category: "misc",
+    slashOptions: {
+      commandOptions: new Discord.SlashCommandBuilder()
+        .setName("ping")
+        .setDescription(`check bot ping`)
+        .setDMPermission(true),
+    },
+    restrictTo: "all",
   },
-  async ({ Swessage }: executeArgs) => {
-    const ret = new Swessage.Bobb.Return(Swessage.Bobb);
-    ret.setContent(`🏓 Pong! ${Date.now() - Swessage.createdTimestamp}ms`)
+  async ({ slashInt }: executeArgs) => {
+    const ret = new slashInt.Bobb.Return(slashInt.Bobb);
+    ret.setContent(
+      `🏓 Pong! ${Date.now() - slashInt.slash.createdTimestamp}ms`
+    );
     return ret;
-  })
+  }
+);

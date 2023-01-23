@@ -1,11 +1,12 @@
 import {
-	CommandInteraction,
+	ChatInputCommandInteraction,
 	MessageComponentInteraction,
 	SelectMenuInteraction
 } from 'discord.js';
-import { slashMessage } from '../../../lib/bot/discordExtensions';
+import { slashInteraction } from '../../../lib/bot/discordThings';
 import _ from 'lodash';
-type InteractionTypes = CommandInteraction | MessageComponentInteraction | SelectMenuInteraction
+import Bobb from '../botClass';
+type InteractionTypes = ChatInputCommandInteraction | MessageComponentInteraction | SelectMenuInteraction
 
 exports.handle = async function (interaction: InteractionTypes): Promise<any> {
 	//console.log("interaction", interaction, interaction.isMessageComponent(), interaction.isButton(), interaction.isCommand())
@@ -20,10 +21,8 @@ exports.handle = async function (interaction: InteractionTypes): Promise<any> {
 	if (interaction.isCommand()) {
 		await interaction.deferReply()
 		await this.client.channels.fetch(interaction.channelId)
-		const message = new slashMessage(this, interaction, "interaction")
+		const message = new slashInteraction(this as Bobb, interaction)
 		return await this.handlers.handleSlashCommand.call(this, message)
-	} else if (interaction.isContextMenu()) {
-		return await this.handlers.handleContextMenu.call(this, interaction)
-	}
+	} 
 }
 

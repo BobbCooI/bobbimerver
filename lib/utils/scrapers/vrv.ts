@@ -6,7 +6,7 @@ import Base64 from "crypto-js/enc-base64";
 import HMACSHA1 from "crypto-js/hmac-sha1";
 // @ts-ignore
 import { cache, appConfig, windowConfig, config, VRVret, searchItem, mediaResourceJson, cmsSign, getOptions } from "./VRV"
-import { Message, MessageEmbed } from 'discord.js';
+import { EmbedBuilder, Message } from 'discord.js';
 import { ordinate } from "../utils";
 import { gotOptions } from './common';
 const api = "https://api.vrv.co";
@@ -310,7 +310,7 @@ export default class VRV {
      date: Date
    }*/
   }
-  setCacheEmbed(id: string, embed: MessageEmbed) {
+  setCacheEmbed(id: string, embed: EmbedBuilder) {
     if (!this.cache[id]) throw new Error(`did not initperson ${id} yet.`)
     this.cache[id].embed = embed;
     this.cache[id].date = new Date();

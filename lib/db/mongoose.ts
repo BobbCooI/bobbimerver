@@ -8,6 +8,7 @@ export default {
       family: 4
     };
     await mongoose.connect(config.mongoPass!, dbOptions);
+    mongoose.set("strictQuery", true);
     mongoose.Promise = global.Promise;
     mongoose.connection.on("connected", () => {
       console.log("Mongoose has successfully connected!");

@@ -27,7 +27,11 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "baseUrl": ""
+    "baseUrl": "",
+    "paths": {
+      "@lib/*": [ "lib/*" ],
+      "@src/*": [ "src/*" ]
+    },
   },
   "types": [
     "cors"
@@ -53,5 +57,5 @@
     
     "./lib/*.js",
     "./lib/**/*.js"
-  ]
+, "MESSAGE_CREATE.ts", "help.ts"  ]
 }

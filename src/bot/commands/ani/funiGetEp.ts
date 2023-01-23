@@ -1,100 +1,108 @@
-import { options } from '../../../config.json';
-import { executeArgs } from "lib/bot/botTypes";
+import { executeArgs } from "lib/bot/discordThings";
 import { Command } from "../../../../lib/bot/Command";
-import {Permissions, MessageEmbed} from "discord.js"
+import Discord from "discord.js";
 export default new Command(
   {
-    name: "funigetep",
-    description:`3/3 - Get the episodes of your choice from ${options.prefix}funiChoose. Usage can be 1, 1,2, 1-2, or 'latest'`,
-    clientPermissions: [
-        Permissions.FLAGS.SEND_MESSAGES,
-        Permissions.FLAGS.EMBED_LINKS,
-    ],
-    enabled:false,
-    enableSlashCommand: false,
-    args: [
-      {
-        id: "episodes",
-        type: "string",
-        description: "Usage: 1 | 1-2 | 1,2 | latest",
-        default: undefined,
-        required: true
-      }
-    ],
-    restrictTo: "all",
-    cooldown: 10 * 1000
+    category: "ani",
+
+    slashOptions: {
+      isSubCommand: true,
+      groupName: "funi",
+      commandOptions: new Discord.SlashCommandSubcommandBuilder()
+        .setName("getep")
+        .setDescription(
+          `3/3 - Get the episodes of your choice from /funi choose. Usage can be 1, 1,2, 1-2, or 'latest'`
+        )
+        .addStringOption((option) =>
+          option
+            .setName("episodes")
+            .setDescription("what you want ofc")
+            .setRequired(true)
+        ),
+    },
+    enabled: false,
+    restrictTo: "guild",
+    cooldown: 10 * 1000,
   },
-  async ({ Swessage, addCD }: executeArgs) => {
+  async ({ slashInt, addCD }: executeArgs) => {
     const st = Date.now();
-    let person = Swessage.Bobb.client.funiCache[Swessage.author.id];
+    let person = slashInt.Bobb.client.funiCache[slashInt.slash.user.id];
 
     addCD?.();
-    const gettingEps = await Swessage.send("Getting episodes...");
-    let epFromId = await person.getEp(Swessage.args?.get("episodes")?.value);
-    let streambeds: Array<MessageEmbed> = [];
+    const gettingEps = await slashInt.send("Getting episodes...");
+    let epFromId = await person.getEp(
+      slashInt.slash.options.getString("episodes")
+    );
+    let streambeds: Array<Discord.EmbedBuilder> = [];
     if (epFromId.success === false) return `${epFromId.error}`;
     else {
       for (let ep in epFromId.res.epMedia) {
         if (epFromId.res.epMedia[ep].vData.success) {
-          let emb = new MessageEmbed()
+          let emb = new Discord.EmbedBuilder()
             .setColor(Math.floor(Math.random() * 0xffffff))
             .setTitle(
               `${person.choiceTitle} | ${epFromId.res.epMedia[ep].episodeName}`
             )
             .setDescription(`Episode Number: ${ep}`)
-            .addField(
-              `Stream URL: `,
-              epFromId.res.epMedia[ep].vData.res.videoUrl,
-              true
-            )
+            .addFields({
+              name: `Stream URL: `,
+              value: epFromId.res.epMedia[ep].vData.res.videoUrl,
+              inline: true,
+            })
             .setTimestamp()
-            .setFooter(
-              `Requested by ${
-                Swessage.author.tag
-              } | Time taken: ${Swessage.Bobb.utils.timeMilli(
+            .setFooter({
+              text: `Requested by ${
+                slashInt.slash.user.tag
+              } | Time taken: ${slashInt.Bobb.utils.timeMilli(
                 epFromId.res.epMedia[ep].tTime
-              )}`
-            );
+              )}`,
+            });
           if (epFromId.res.epMedia[ep].vData.res.subsUrl)
-            emb.addField(
-              `Subs URL: `,
-              epFromId.res.epMedia[ep].vData.res.subsUrl,
-              true
-            );
+            emb.addFields({
+              name: `Subs URL: `,
+              value: epFromId.res.epMedia[ep].vData.res.subsUrl,
+              inline: true,
+            });
 
           if (epFromId.res.epMedia[ep].vData.res.info)
-            emb.addField(
-              `Info: `,
-              epFromId.res.epMedia[ep].vData.res.info,
-              true
-            );
+            emb.addFields({
+              name: `Info: `,
+              value: epFromId.res.epMedia[ep].vData.res.info,
+              inline: true,
+            });
 
           person.latest = emb;
           streambeds.push(emb);
         } else if (epFromId.res.epMedia[ep].vData.res.success == false) {
-          let emb = new MessageEmbed()
+          let emb = new Discord.EmbedBuilder()
             .setColor(Math.floor(Math.random() * 0xffffff))
             .setTitle(
               `${person.choiceTitle} | ${epFromId.res.epMedia[ep].episodeName}`
             )
-            .addField("Error", epFromId.res.epMedia[ep].vData.error)
+            .addFields({
+              name: "Error",
+              value: epFromId.res.epMedia[ep].vData.error,
+            })
             .setTimestamp()
-            .setFooter(
-              `Requested by ${
-                Swessage.author.tag
-              } | Time taken: ${Swessage.Bobb.utils.timeMilli(
+            .setFooter({
+              text: `Requested by ${
+                slashInt.slash.user.tag
+              } | Time taken: ${slashInt.Bobb.utils.timeMilli(
                 epFromId.res.epMedia[ep].tTime
-              )}`
-            );
+              )}`,
+            });
           streambeds.push(emb);
         }
       }
     }
 
     await gettingEps.edit(
-      `Finished! Total time taken: ${Swessage.Bobb.utils.timeMilli(Date.now() - st)}`
+      `Finished! Total time taken: ${slashInt.Bobb.utils.timeMilli(
+        Date.now() - st
+      )}`
     );
-    const Ret = new Swessage.Bobb.Return(Swessage.Bobb, { Paginate: true });
-    Ret.setEmbeds(streambeds).modernPaginate(Swessage, "Streams");
+    const Ret = new slashInt.Bobb.Return(slashInt.Bobb, { Paginate: true });
+    Ret.setEmbeds(streambeds).modernPaginate(slashInt, "Streams");
     return Ret;
-  });
+  }
+);
