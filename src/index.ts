@@ -36,8 +36,8 @@ export default async function mainLaunch() {
   });
 
   client.login(config.botToken!);
-  const Asuna = new Bobb(client);
-  await Asuna.deploy();
+  const Swolly = new Bobb(client);
+  await Swolly.deploy();
 
   app.set("trust proxy", 1);
   app.use(

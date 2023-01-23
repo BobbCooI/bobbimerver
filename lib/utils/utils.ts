@@ -27,12 +27,7 @@ export type webhook = {
 }
 export async function createWebhook(opts: webhook): Promise<void> {
   if (!opts.embedContent) return;
-  /*  opts = {
-       type:"log",
-       user:"asuna-kun",
-       content:"",
-       ...opts
-    }*/
+ 
   let webhookClient = new Discord.WebhookClient(
     {
       url: config.webhookURL,
