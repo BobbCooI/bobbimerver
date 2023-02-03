@@ -1,0 +1,46 @@
+{
+    "options": {
+        "dev": true,
+        "developers": [
+            ""
+        ],
+        "owners": [
+            ""
+        ],
+        "patreonCampaignID": "",
+        "featureRequestChannel": "",
+        "spamReportChannel": "",
+        "donorPerksChannel": "",
+        "errorChannel": "",
+        "botID": ""
+    },
+    "NEXTAUTH_SECRET":"",
+
+    "headerAuth": "X-BAUTH",
+    "headerSecret": "",
+    "headerAni": "X-BIME",
+    "headerAniSecret": "",
+    "jwtAccessSecret": "",
+    "saltFactor": "7",
+    "encryptWord": "",
+    "webhookToken": "",
+    "webhookURL": "",
+
+    "mongoPass": "",
+    "botToken": "",
+    "appID": "",
+    "devGuildID": "",
+   
+   
+    "vrvEmail": "",
+    "vrvPass": "",
+    "funiApiHost": "",
+    "funiToken": "",
+    "myFuniToken": "",
+    "funiEmail": "",
+    "funiPass": "",
+    "OPENAI_API_KEY": "",
+
+    "sentryURL": ""
+   
+}

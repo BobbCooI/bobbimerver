@@ -75,7 +75,7 @@ export default (Bobb: Bobb) => ({
       user.id
     );
     const dbUser = await this.db.fetchMemberInfo({discID: user.id});
-    if (cooldown > Date.now() && process.env.NODE_ENV !== 'dev' && !dbUser?.bypassCooldown) {
+    if (cooldown > Date.now() && !dbUser?.bypassCooldown) {
       const waitTime = (cooldown - Date.now()) / 1000;
       let cooldownWarning = `**time left until you can run this command again:** `;
 

@@ -19,14 +19,12 @@ import { Command } from "../../lib/bot/Command";
 import commandHandler from "../../lib/bot/CommandHandler";
 
 export class extClient extends Discord.Client {
-  crCache: any;
   vrvCache: any;
   funiCache: any;
   opts: any;
   owners: Array<Discord.Snowflake>
   constructor(opts: any) {
     super(opts);
-    this.crCache = {};
     this.vrvCache = {};
     this.funiCache = {};
     this.owners = config.options.owners;

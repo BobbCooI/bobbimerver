@@ -4,22 +4,18 @@ import express, { Request, Response } from "express";
 const app = express();
 import db from "../lib/db/mongoose";
 import Bobb, { extClient } from "./bot/botClass";
-import { GatewayIntentBits } from 'discord.js';
+import { GatewayIntentBits } from "discord.js";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import Stats from "../lib/db/models/Stats";
-import Api from './webApi';2
+import Api from "./webApi";
 import config from "./config.json";
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 //import * as Sentry from "@sentry/node";
 
-export default async function mainLaunch() {
-
-
-    await db.connector();
-
- const client = new extClient({
+export default async function botLaunch() {
+  const client = new extClient({
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMembers,
@@ -36,9 +32,14 @@ export default async function mainLaunch() {
   });
 
   client.login(config.botToken!);
-  const Swolly = new Bobb(client);
-  await Swolly.deploy();
 
+  const Swolly = new Bobb(client);
+   await Swolly.deploy();
+
+ 
+}
+
+function startWebServer() {
   app.set("trust proxy", 1);
   app.use(
     morgan(
@@ -49,19 +50,23 @@ export default async function mainLaunch() {
   app.use(cookieParser());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use((_req, _res, next) => {
-    next();
-  }, cors({ maxAge: 84600 }));
-  app.use("/api", Api);
+
+
+  app.use(cors({
+    origin: "http://localhost:3001",
+    credentials: true, //access-control-allow-credentials:true
+    optionsSuccessStatus: 200,
+  }));
+app.use("/api", Api);
   app.use("/", async (_req: Request, _res: Response, next: any) => {
-     Stats.updateOne(
+    Stats.updateOne(
       { _id: "60070be0f12d9e041931de68" },
       { $inc: { webRequests: 1 } }
     );
+    
     next();
   });
-  
-  
+
   let port = 3000;
   app.listen(port, () => {
     console.log("❇️ Express server is running on port", port);
@@ -70,11 +75,15 @@ export default async function mainLaunch() {
   app.get("/", (_req: Request, res: Response) => {
     res.send("Hello World!");
   });
-
-
 }
-mainLaunch();
 
+async function mainLaunch() {
+  await db.connector();
+  await botLaunch();
+  startWebServer();
+}
+
+mainLaunch();
 
 /* 
 Sentry.init({

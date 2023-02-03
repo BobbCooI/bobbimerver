@@ -63,61 +63,9 @@ export class Command {
   async init(): Promise<any> {}
 
   async run({ slashInt, addCD }: executeArgs) {
-    /*  if (this.props.missingArgs && !args[0]) {
-      return this.props.missingArgs;
-    }
-    if (this.props.minArgs && args.length < this.props.minArgs) {
-      return this.props.missingArgs;
-    }*/
-
-    // Here can be middleware code such as args length checking ex. above ^
-
+    // Here can be middleware code if ever needed
     return this.fn({ slashInt, addCD });
   }
-
-  /*async registerSlashCommand(client: extClient, guildID?: Snowflake) {
-    const commandData = this.getSlashCommandJSON();
-    let commands = [];
-    if (!this.guilds.length) {
-      const command = await client.application!.commands
-        .create(commandData, guildID || "")
-        .catch((e: Error) => e);
-      if (command instanceof DiscordAPIError)
-        command.code != 30032 &&
-          console.warn(
-            `[Commands] Failed to register slash command for ${this.props.name}`,
-            command
-          );
-      else if (command instanceof Error)
-        console.warn(
-          `[Commands] Failed to register slash command for ${this.props.name}`,
-          command.stack
-        );
-      else if (command.id) commands.push(command);
-    } else {
-      for (const guildId of this.guilds) {
-        const guild = client.guilds.cache.get(guildId);
-        if (!guild) continue;
-        const command = await guild.commands
-          .create(commandData)
-          .catch((e: Error) => e);
-        if (command instanceof DiscordAPIError)
-          command.httpStatus != 403 &&
-            command.code != 50001 &&
-            console.warn(
-              `[Commands] Failed to register slash command for ${this.props.name} in guild ${guild}`,
-              command
-            );
-        else if (command instanceof Error)
-          console.warn(
-            `[Commands] Failed to register slash command for ${this.props.name} in guild ${guild}`,
-            command.stack
-          );
-        else if (command.id) commands.push(command);
-      }
-    }
-    return commands;
-  }*/
 }
 
 export interface CommandOptions {

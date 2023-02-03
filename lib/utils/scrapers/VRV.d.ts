@@ -34,7 +34,6 @@ export interface VRVret extends ret {
   title?: string;
 
   // VRV getStream; final expected return
-  message?: Message;
   epMedia?: {
     [key: number]: {
       streamURL: string;
@@ -45,14 +44,14 @@ export interface VRVret extends ret {
 }
 export interface cache extends Record<string, any> {
   [index: string]: {
-    searchQuery?: string;
-    searchRes?: Array<string>;
-    choiceID?: string; // Looks like this: G6Q4CZ4PQ
-    choiceTitle?: string;
-    aniEps?: Array<string>; //Looks like this [  '1st Episode • Reincarnation, in Another World? • GDVFVNQ02',  '2nd Episode • My House, On Fire? • GKKF3ZKP2',  '3rd Episode • Earth Wyrm (Dragon), Bad News? • GVMF0V7QK']
-    selEp?: string; // One item from aniEps array of strings 
-    embed?: MessageEmbed;
-    date?: Date;
+    searchQuery: string;
+    searchRes: Array<string>;
+    choiceID: string; // Looks like this: G6Q4CZ4PQ
+    choiceTitle: string;
+    aniEps: Array<string>; //Looks like this [  '1st Episode • Reincarnation, in Another World? • GDVFVNQ02',  '2nd Episode • My House, On Fire? • GKKF3ZKP2',  '3rd Episode • Earth Wyrm (Dragon), Bad News? • GVMF0V7QK']
+    selEp: string; // One item from aniEps array of strings 
+    embed: MessageEmbed;
+    date: Date;
   }
 }
 export interface cmsSign extends Record<string, any> {

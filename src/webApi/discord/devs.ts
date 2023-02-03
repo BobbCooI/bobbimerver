@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import config from "../../config.json"
 export async function getDevs(req: Request, res: Response) {
   const userDiscApi = axios.create({
-    baseURL: `https://discord.com/api/v8/users/`,
+    baseURL: `https://discord.com/api/v10/users/`,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bot ${config.botToken}`

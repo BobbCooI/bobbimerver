@@ -1,3 +1,4 @@
+
 export function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
@@ -21,6 +22,13 @@ export const COMMAND_GROUP_DESCRIPTIONS = {
 };
 
 export const OWNER_ONLY_COMMANDS = ["bypcd"];
+export enum Position {
+  GUEST = "",
+  BUDDY = "999445497737642035",
+  MODERATOR = "999445598145089636",
+  ADMIN = "999445666994602024",
+}
+
 
 export let emojis = {
   // shoutout to blobhub for the ebic emotes, https://inv.wtf/blobhub

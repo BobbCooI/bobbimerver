@@ -1,19 +1,21 @@
-import express, {Request, Response} from "express";
+import express, { Request, Response } from "express";
 const router = express.Router();
-import apiKeys from "./secret";
-import config from "../config.json"
+
 router.use(
   "/",
-  (req: Request, res: Response, next: any): any => {
-    const apiKey = req.get(config.headerAuth!);
-    if (!apiKeys.has(apiKey)) {
-      return res.send({success: false, error: "Invalid API Key."})
-    }
-      next();
-return;
-      //   next(error);
+  async(req: Request, _res: Response, next: any) => {
+    // WORK ON AUTHORIZATION HERE. NOTHING IS REQUESTED TO 
+    // THIS API WITHOUT A GOOD NEXTAUTH SESSION
+
+  console.log("JSON Web Token", req.cookies)
+      //return res.send({ success: false, error: "Invalid API Key." });
+   
+    next();
+    return;
   },
   async (_req: Request, _res: Response, next: any): Promise<any> => {
+    // after authorization, can check cache for data requested here
+
     // in memory cache
     /*  if (cacheTime && cacheTime > Date.now() - 30 * 1000) {
     // BTW - set a cache header so browsers work WITH you.
@@ -30,9 +32,7 @@ return;
 import anpi from "./anpi";
 import discord from "./discord";
 import visits from "./webVisits";
-import auth from "./auth"
 router.use("/ani", anpi);
 router.use("/discord", discord);
 router.use("/visits", visits);
-router.use("/auth", auth);
 export default router;
