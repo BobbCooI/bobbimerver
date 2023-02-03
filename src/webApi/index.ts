@@ -4,6 +4,7 @@ const router = express.Router();
 router.use(
   "/",
   async(req: Request, _res: Response, next: any) => {
+    console.log(_res.locals)
     // WORK ON AUTHORIZATION HERE. NOTHING IS REQUESTED TO 
     // THIS API WITHOUT A GOOD NEXTAUTH SESSION
 
@@ -28,7 +29,7 @@ router.use(
       return { success: false, error };
     }
   }
-);
+)
 import anpi from "./anpi";
 import discord from "./discord";
 import visits from "./webVisits";

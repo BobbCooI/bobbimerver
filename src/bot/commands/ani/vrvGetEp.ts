@@ -28,7 +28,7 @@ export default new Command(
   },
   async ({ slashInt, addCD }: executeArgs) => {
     let st = Date.now();
-    let person = slashInt.Bobb.VRV.cache[slashInt.slash.user.id];
+    let person = slashInt.Bobb.discordVRV.cache[slashInt.slash.user.id];
     if (!person)
       return `Please start by choosing an anime with the command /vrv search <term(s)>`;
     addCD?.();
@@ -57,9 +57,8 @@ export default new Command(
     // Flattens the array, removes any values that isn't a number
     epNums = [...new Set(_.flattenDeep(epNums))].filter(Boolean);
 
-    let epFromId = await slashInt.Bobb.VRV.getStream(
+    let epFromId = await slashInt.Bobb.discordVRV.getStream(
       epNums,
-      initial,
       slashInt.slash.user.id
     );
     if (epFromId!.success === false) return `${epFromId.error!}`;
@@ -73,7 +72,7 @@ export default new Command(
       let emb = new Discord.EmbedBuilder()
         .setColor(Math.floor(Math.random() * 0xffffff))
         .setTitle(
-          `${slashInt.Bobb.VRV.cache[slashInt.slash.user.id]?.choiceTitle} | ${
+          `${slashInt.Bobb.discordVRV.cache[slashInt.slash.user.id]?.choiceTitle} | ${
             epFromId.epMedia[ep].epTitle
           }`
         )
@@ -106,17 +105,17 @@ export default new Command(
             Date.now() - st
           )}`
         );
-    slashInt.Bobb.VRV.setCacheEmbed(slashInt.slash.user.id, mediaEmbeds[0]);
+    slashInt.Bobb.discordVRV.setCacheEmbed(slashInt.slash.user.id, mediaEmbeds[0]);
 
-    // @ts-ignore
-    const epButtons: Discord.MessageButtonOptions[] = Object.keys(
-      epFromId.epMedia
-    ).map((streamNumber) => ({
-      type: 2,
-      label: streamNumber,
-      style: "LINK",
-      url: epFromId.epMedia[streamNumber].shortenedURL,
-    }));
+
+    // const epButtons= Object.keys(
+    //   epFromId.epMedia!
+    // ).map((streamNumber: string) => ({
+    //   type: 2,
+    //   label: streamNumber,
+    //   style: "LINK",
+    //   url: epFromId.epMedia![streamNumber].shortenedURL,
+    // }));
     const Ret = new slashInt.Bobb.Return(slashInt.Bobb, { Paginate: true });
     Ret.setEmbeds(mediaEmbeds).modernPaginate(slashInt, "Streams");
     //     .setButtons(epButtons)

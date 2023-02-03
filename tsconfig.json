@@ -27,7 +27,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "baseUrl": "",
+    "baseUrl": "./",
     "paths": {
       "@lib/*": [ "lib/*" ],
       "@src/*": [ "src/*" ]

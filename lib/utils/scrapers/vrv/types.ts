@@ -1,5 +1,22 @@
-import { Message, MessageEmbed } from "discord.js";
-import { ret } from "./common";
+import { ret } from "../common";
+import { EmbedBuilder } from "@discordjs/builders";
+
+const api = "https://api.vrv.co";
+// hidive was between cruncyroll and mondo before
+// was between boomerang and crunchyroll before
+// roosterteeth was between nicksplat and vrvselect before
+export const domains = {
+  api ,
+  search: `${api}/disc/public/v1/US/M3/crunchyroll/-/search?`,
+  premSearch: `${api}/disc/public/v1/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/-/search?`,
+  episodes: `${api}/cms/v2/US/M3/crunchyroll/episodes?`,
+  premEpisodes: `${api}/cms/v2/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/episodes?`,
+  seasons: `${api}/cms/v2/US/M3/crunchyroll/seasons?`,
+  premSeasons: `${api}/cms/v2/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/seasons?`,
+  stream: `${api}/cms/v2/US/M3/crunchyroll/videos/`,
+  premStream: `${api}/cms/v2/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/videos/`,
+  accountPlayheads: `${api}/core/accounts/8883774/playheads?`,
+};
 export interface config {
   email?: string;
   password?: string;
@@ -38,6 +55,8 @@ export interface VRVret extends ret {
     [key: number]: {
       streamURL: string;
       epTitle: string;
+      timeTaken: number;
+      shortenedURL: string;
     };
   };
   timeTaken?: number;
@@ -50,8 +69,9 @@ export interface cache extends Record<string, any> {
     choiceTitle: string;
     aniEps: Array<string>; //Looks like this [  '1st Episode • Reincarnation, in Another World? • GDVFVNQ02',  '2nd Episode • My House, On Fire? • GKKF3ZKP2',  '3rd Episode • Earth Wyrm (Dragon), Bad News? • GVMF0V7QK']
     selEp: string; // One item from aniEps array of strings 
-    embed: MessageEmbed;
+    embed: EmbedBuilder;
     date: Date;
+    latest: EmbedBuilder
   }
 }
 export interface cmsSign extends Record<string, any> {

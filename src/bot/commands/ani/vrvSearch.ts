@@ -37,9 +37,9 @@ export default new Command(
     let auth = await base.auth();
     if (!auth!.success) return `Oh no! ${auth.error}`;
     }  */
-    slashInt.Bobb.VRV.initPerson(slashInt.slash.user.id);
-    let search = await slashInt.Bobb.VRV.search(
-      slashInt.slash.options.get("query"),
+    slashInt.Bobb.discordVRV.initPerson(slashInt.slash.user.id);
+    let search = await slashInt.Bobb.discordVRV.search(
+      slashInt.slash.options.getString("query")!,
       slashInt.slash.user.id
     );
     let end = Date.now();

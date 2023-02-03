@@ -6,16 +6,16 @@
   "main": "dist/src/index.js",
   "scripts": {
     "start": "tsc && node dist/src/index.js",
-    "dev": "nodemon src/index.ts"
+    "dev": "ts-node src/index.ts"
   },
   "_moduleAliases": {
     "@lib": "dist/lib",
     "@src": "dist/src"
   },
   "dependencies": {
-    "@sentry/node": "^7.31.1",
-    "@sentry/tracing": "^7.31.1",
-    "axios": "^1.2.3",
+    "@sentry/node": "^7.36.0",
+    "@sentry/tracing": "^7.36.0",
+    "axios": "^1.3.2",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -31,12 +31,12 @@
     "m3u8-parsed": "^1.3.0",
     "module-alias": "^2.2.2",
     "moment": "^2.29.4",
-    "mongoose": "^6.8.3",
+    "mongoose": "^6.9.0",
     "morgan": "^1.10.0",
-    "next-auth": "^4.19.1",
+    "next-auth": "^4.19.2",
     "nodemon": "^2.0.20",
     "openai": "^3.1.0",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.5"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -44,12 +44,13 @@
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
     "@types/crypto-js": "^4.1.1",
-    "@types/express": "^4.17.15",
-    "@types/jsonwebtoken": "^9.0.0",
+    "@types/express": "^4.17.16",
+    "@types/jsonwebtoken": "^9.0.1",
     "@types/lodash": "^4.14.191",
     "@types/morgan": "^1.9.4",
     "@types/node": "^18.11.18",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "tsx": "^3.12.2"
   },
   "engines": {
     "node": "16.x"

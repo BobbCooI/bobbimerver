@@ -8,7 +8,7 @@ import Guild from "../../lib/db/models/Guild";
 import botDB from "../../lib/bot/botDB";
 import Stats from "../../lib/db/models/Stats";
 import config from "../config.json";
-import VRV from "../../lib/utils/scrapers/vrv";
+import VRV from "../../lib/utils/scrapers/vrv/VRV";
 import Funi from "../../lib/utils/scrapers/funiClass";
 import loggers from "../../lib/utils/logger";
 import * as utils from "../../lib/utils/utils";
@@ -17,6 +17,7 @@ import { Return } from "../../lib/bot/discordThings";
 const { handleSlashCommand } = require("../../lib/utils/handlers/slash")
 import { Command } from "../../lib/bot/Command";
 import commandHandler from "../../lib/bot/CommandHandler";
+import DiscordVRV from "@lib/utils/scrapers/vrv/discordVRV";
 
 export class extClient extends Discord.Client {
   vrvCache: any;
@@ -41,7 +42,7 @@ export default class Bobb {
   botStats: any;
   config: any;
   Funi: any;
-  VRV: any;
+  discordVRV: DiscordVRV;
   loggers: any;
   utils: any;
   openai: OpenAIApi;
@@ -56,7 +57,7 @@ export default class Bobb {
   messageCollector: any;
   Return: typeof Return;
 
-  constructor(client: extClient) {
+  constructor(client: extClient, VRV: VRV) {
     /* declaring */
     this.client = client;
     this.slashCommands = [];
@@ -68,7 +69,8 @@ export default class Bobb {
     // TO DO REFRACTOR DB FUNCTIONS CODE
     this.botStats = Stats;
     this.config = config;
-    this.VRV = new VRV(this, { lang: "enUS", debug: false, premium: true })
+    this.discordVRV = new DiscordVRV(this, VRV);
+
     this.Funi = Funi;
     this.loggers = loggers(this);
     this.utils = utils;
@@ -85,8 +87,8 @@ export default class Bobb {
 
   }
 
-  async deploy(): Promise<void> {
-    console.log("Deploying...");
+  async deploy(): Promise<Bobb> {
+    console.log("[ Deploying... ]");
     this.messageCollector = new messageCollector(this.client);
     this.client.on("ready", this.ready.bind(this));
 
@@ -94,7 +96,7 @@ export default class Bobb {
     // const raws = []
 
     for (const listener of listeners) {
-      console.log(listener)
+      console.log(`[ Loaded ] ${listener}`);
       if (listener.includes("_")) {
         this.client.ws.on(listener, require(path.join(__dirname, "events", listener)).handle.bind(this))
       } else {
@@ -104,6 +106,7 @@ export default class Bobb {
         );
       }
     }
+    return this;
 
   }
 
@@ -127,16 +130,11 @@ export default class Bobb {
       { type: ActivityType.Competing }
     );
     const doneLog = Date.now() - start
-    start = Date.now()
-    await this.VRV.init();
-    let auth = await this.VRV.auth();
-    if (!auth!.success) throw new Error(`Oh no! Trouble vrv auth ${auth.error}`);
-    const doneVRVAuth = Date.now() - start
-
+ 
+    
     console.log("%c Time setups", "font-weight: bold; font-size: 50px; color: green", `
     [Commands Took]: ${this.utils.timeMilli(doneLoadCommands)}
     [Logging Took]: ${this.utils.timeMilli(doneLog)}
-    [VRV Auth Took]: ${this.utils.timeMilli(doneVRVAuth)}
     `);
     console.log(`Ready for action ❣️`)
   }

@@ -27,10 +27,10 @@ export default new Command(
   async ({ slashInt, addCD }: executeArgs) => {
     const userSelection = slashInt.slash.options.getInteger("selection");
     if (!userSelection) return `pick something to choose 🙄`;
-    let person = slashInt.Bobb.VRV.cache[slashInt.slash.user.id];
+    let person = slashInt.Bobb.discordVRV.cache[slashInt.slash.user.id];
     if (!person)
       return `Please start by finding an anime with the command /vrv search <term(s)>`;
-    let choice = await slashInt.Bobb.VRV.choose(
+    let choice = await slashInt.Bobb.discordVRV.choose(
       userSelection,
       slashInt.slash.user.id
     );
@@ -42,7 +42,7 @@ export default new Command(
     let end = 20;
     for (let i = 0; i < Math.ceil(choice.res.length / 20); i++) {
       const emb = new Discord.EmbedBuilder()
-        .setTitle(choice.title)
+        .setTitle(choice.title!)
         .setAuthor({
           name: slashInt.slash.user.tag,
           iconURL: slashInt.slash.user.displayAvatarURL(),

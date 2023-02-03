@@ -10,7 +10,8 @@ import {
   InteractionReplyOptions,
   ButtonStyle,
   APIButtonComponentWithCustomId,
-  ComponentType
+  ComponentType,
+  ButtonInteraction
 } from "discord.js";
 import { Command } from "./Command";
 import _ from 'lodash';
@@ -90,6 +91,11 @@ export class Return {
     if (!this.Paginate) return;
     if (!this.embeds || !this.embeds.length || this.embeds.length == 0) throw new Error("Pages are not given.");
     if (this.embeds.length == 1) return message.send(<InteractionReplyOptions>this);
+    const firstPageID = `firstPage#${message.slash.id}`;
+    const previousPageID = `previousPage#${message.slash.id}`;
+    const nextPageID = `nextPage#${message.slash.id}`;
+    const lastPageID = `lastPage#${message.slash.id}`;
+
     let buttonList: Array<ButtonBuilder> = this.setButtons([
       {
         label: "",
@@ -98,7 +104,7 @@ export class Return {
           id: "883181509408866324"
         },
         style: ButtonStyle.Primary,
-        custom_id: "firstPage",
+        custom_id: firstPageID,
         disabled: true,
         type: ComponentType.Button
       },
@@ -109,7 +115,7 @@ export class Return {
           id: "883181795716255746"
         },
         style: ButtonStyle.Primary,
-        custom_id: "previousPage",
+        custom_id: previousPageID,
         disabled: true,
         type: ComponentType.Button
       },
@@ -120,7 +126,7 @@ export class Return {
           id: "883181957264048148"
         },
         style: ButtonStyle.Primary,
-        custom_id: "nextPage",
+        custom_id: nextPageID,
         type: ComponentType.Button
       },
       {
@@ -130,7 +136,7 @@ export class Return {
           id: "883182068517965874"
         },
         style: ButtonStyle.Primary,
-        custom_id: "lastPage",
+        custom_id: lastPageID,
         type: ComponentType.Button
 
       }
@@ -141,39 +147,39 @@ export class Return {
     let row = new ActionRowBuilder<ButtonBuilder>({
       components: buttonList
     })
-    //  console.log(message)
+
     const curPage = await message.send({
       embeds: [this.embeds[page].setFooter({text:`${footer ? footer + " | " : ""}Page ${page + 1} / ${this.embeds.length}`})],
       components: [<any>row]
     });
 
     const filter = (i: MessageComponentInteraction) =>
-      i.customId ===  "firstPage" || // firstPage
-      i.customId === "previousPage" || // previousPage
-      i.customId === 'nextPage'|| // nextPage
-      i.customId ===  "lastPage"   // lastPage
+      i.customId === firstPageID || // firstPage
+      i.customId === previousPageID || // previousPage
+      i.customId === nextPageID || // nextPage
+      i.customId ===  lastPageID  // lastPage
 
     const collector = await curPage.channel.createMessageComponentCollector({
       filter,
       time: 1000 * 45,
     });
-    collector.on("collect", async (i) => {
+    collector.on("collect", async (i: ButtonInteraction) => {
       switch (i.customId) {
-        case "firstPage":
+        case firstPageID:
           page = 0
           break;
-        case "previousPage":
+        case previousPageID:
           page = page > 0 ? --page : this.embeds!.length - 1;
           break;
-        case "nextPage":
+        case nextPageID:
           page = page + 1 < this.embeds!.length ? ++page : 0;
           break;
-        case "lastPage":
+        case  lastPageID:
           page = this.embeds!.length - 1
           break;
         default:
           break;
-      }
+      };
 
       row = new ActionRowBuilder<ButtonBuilder>().addComponents(
         page == 0 ? buttonList[0].setDisabled( true) : buttonList[0].setDisabled(false),
@@ -181,6 +187,7 @@ export class Return {
         page < this.embeds!.length - 1 ? buttonList[2].setDisabled(false): buttonList[2].setDisabled(true),
         page > 0 && this.embeds!.length - 1 == page ? buttonList[3].setDisabled(true) : buttonList[3].setDisabled(false)
       );
+
       await i.update({
         embeds: [this.embeds![page].setFooter({text: `${footer ? footer + " | " : ""}Page ${page + 1} / ${this.embeds!.length}`})],
         components: [row],
@@ -240,7 +247,7 @@ export class slashInteraction {
   }
 }
 
-export function handleRes(res: any, command: Command, commandType: string, message: slashInteraction) {
+export async function handleRes(res: any, command: Command, commandType: string, message: slashInteraction) {
   if (!res) {
     return;
   }
@@ -254,5 +261,5 @@ export function handleRes(res: any, command: Command, commandType: string, messa
   } else {
     throw new Error(`What kind of return for ${command.name}? I received ${res} type ${typeof res}`)
   }
-  return message.send(res).catch(console.log)
+  return  await message.send(res).catch(console.log)
 }

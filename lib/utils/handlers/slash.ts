@@ -49,5 +49,5 @@ exports.handleSlashCommand = async function (msg: slashInteraction) {
     addCD: updateCooldowns,
   });
   //@ts-ignore
-  return handleRes(res, msg.command, "slash", msg);
+  return await handleRes(res, msg.command, "slash", msg);
 };

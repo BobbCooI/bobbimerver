@@ -19,4 +19,10 @@ router.use(
   }
 );
 
+import vrv from "./vrv";
+// split up route handling
+router.use("/vrv", vrv);
+
+
+
 export default router;
