@@ -55,22 +55,17 @@ export default class DiscordVRV {
         error: "Could not find a series matching that query!",
       };
     let res: Array<string> = [];
+    
     await this.Bobb.utils.asyncForEach(
       s.items,
       async (ani: { title: string; id: string }): Promise<void> => {
-        let seasons = await this.VRV._vGetData({
-          url: this.VRV.config.premium ? domains.premSeasons : domains.seasons,
-          note: `Getting seasons for ${ani.title}`,
-          type: "cms",
-          query: new URLSearchParams({ series_id: ani.id }).toString(),
-        });
-        if (!seasons.success)
-          res.push(`${ani.title} • Unable to get seasons..`);
-
-        await this.Bobb.utils.asyncForEach(
-          seasons.res.body.items,
-          (ani: { title: string; id: string }): number =>
-            res.push(`${ani.title}　•　${ani.id}`) // push returns the new length of array.
+        let seasons = await this.VRV.getSeasons(ani.id);
+        seasons.res.items.forEach(
+          (ani: { success: boolean; title: string; id: string }) => {
+            if (!seasons.success)
+              res.push(`${ani.title} • Unable to get seasons..`);
+            res.push(`${ani.title}　•　${ani.id}`);
+          }
         );
       }
     );
@@ -100,6 +95,8 @@ export default class DiscordVRV {
         error: "Please input a choice from your search results.",
       };
     choice = choice.toString();
+
+    // see if user has searched anything yet and also init them if not yet
     if (!this.cache[id]) this.initPerson(id);
     if (
       !this.cache[id].searchRes ||
@@ -109,6 +106,7 @@ export default class DiscordVRV {
       return { success: false, error: "Please search for an anime first." };
     let ind: number | null; // index of choice id
 
+    //make sure discord user choice is correctly formatted, then cache the choice
     if (choice.slice(-2).match(/st|nd|rd|th/g)) {
       ind = parseInt(choice.slice(0, -2))
         ? parseInt(choice.slice(0, -2))
@@ -143,26 +141,18 @@ export default class DiscordVRV {
         success: false,
         error: "Something happened while choosing that anime :<",
       };
-    let episodes = await this.VRV._vGetData({
-      url: this.VRV.config.premium ? domains.premEpisodes : domains.episodes,
-      note: `Getting episodes for ${this.cache[id].choiceTitle}`,
-      type: "cms",
-      query: new URLSearchParams({
-        season_id: this.cache[id].choiceID!,
-      }).toString(),
-    });
-    if (!episodes.success)
-      return {
-        success: false,
-        error: "Trouble getting episodes of the anime you chose :(",
-      };
-    if (episodes.res.body.total <= 0)
+
+    // ACTUALLY FETCH EPISODES
+    let episodes = await this.VRV.getEpisodes(this.cache[id].choiceID);
+    if (!episodes.success) return { success: false, error: episodes.error };
+    if (episodes.res.total <= 0)
       return {
         success: false,
         error: `No episodes found for ${this.cache[id].choiceTitle}`,
       };
 
-    this.cache[id].aniEps = episodes.res.body.items.map(
+    // CACHE IT
+    this.cache[id].aniEps = episodes.res.items.map(
       (ep: mediaResourceJson, index: number): string =>
         `${ordinate(index + 1)} Episode　•　${ep.title}　•　${
           ep.__links__.streams.href.split("/")[
@@ -206,43 +196,22 @@ export default class DiscordVRV {
           error: `Input a valid episode number from the list. ${epNum} is invalid`,
         };
       let epGetStart = Date.now();
-      let streams = await this.VRV._vGetData({
-        url: `${this.VRV.config.premium ? domains.premStream : domains.stream}${
-          this.cache[id]!.selEp?.split("　•　")[2]
-        }/streams?`,
-        note: `Getting streams for ${this.cache[id]!.selEp?.split("　•　")[1]}`,
-        type: "cms",
-      });
+      let streams = await this.VRV.getStreams(
+          this.cache[id]!.selEp?.split("　•　")[2]  
+      );
       if (!streams.success)
         return {
           success: false,
-          error: `Error while getting the streams for ${
-            this.cache[id].selEp?.split("　•　")[1]
-          }`,
+          error: streams.error
         };
 
-      let streamBody = streams.res.body;
-      if (
-        streamBody &&
-        streamBody.streams &&
-        streamBody.streams.adaptive_hls &&
-        (streamBody.streams.adaptive_hls["en-US"] ||
-          streamBody.streams.adaptive_hls[""])
-      ) {
+     
         epMedia[epNum] = {
-          streamURL:
-            (streamBody.streams.adaptive_hls["en-US"] &&
-              streamBody.streams.adaptive_hls["en-US"].url) ||
-            (streamBody.streams.adaptive_hls[""] &&
-              streamBody.streams.adaptive_hls[""].url),
+          streamURL: streams.res,
           epTitle: this.cache[id].selEp?.split("　•　")[1],
           timeTaken: Date.now() - epGetStart,
         };
-      } else
-        return {
-          success: false,
-          error: `Trouble parsing for streams for episode ${epNum}`,
-        };
+     
     }
 
     return {

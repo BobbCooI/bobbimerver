@@ -56,15 +56,8 @@ function startWebServer() {
       optionsSuccessStatus: 200,
     })
   );
-  app.use("/", async (_req: Request, _res: Response) => {
-    Stats.updateOne(
-      { _id: "60070be0f12d9e041931de68" },
-      { $inc: { webRequests: 1 } }
-    );
-
-  });
+  
   app.use("/api", Api);
- 
 
   let port = 3000;
   app.listen(port, () => {
@@ -74,7 +67,6 @@ function startWebServer() {
   app.get("/", (_req: Request, res: Response) => {
     res.send("Hello World!");
   });
-
 }
 
 async function mainLaunch() {
@@ -82,11 +74,19 @@ async function mainLaunch() {
   await vrv.init();
   let auth = await vrv.auth();
   if (!auth!.success) throw new Error(`Oh no! Trouble vrv auth ${auth.error}`);
- 
-  await db.connector();
- await botLaunch(vrv);
-  startWebServer();
 
+  app.use("/", async (_req: Request, _res: Response, next) => {
+    await Stats.updateOne(
+      { _id: "60070be0f12d9e041931de68" },
+      { $inc: { webRequests: 1 } }
+    );
+    _res.locals.vrv = vrv;
+    next();
+  });
+
+  await db.connector();
+  //await botLaunch(vrv);
+  startWebServer();
 }
 
 mainLaunch();

@@ -120,6 +120,124 @@ export default class VRV {
   }
 
   /**
+   * @description Get the suggested shows
+   * @returns {Promise<VRVret>} This is the result
+   */
+  async Browse(): Promise<VRVret> {
+  const checkCMS = await this.validateCMS();
+if(checkCMS?.success === false) return checkCMS;
+
+    let browse = await this._vGetData({
+      url: domains.browse,
+      type: "disc",
+      note: "Getting Browse",
+    });
+    if (!browse.success) {
+      return {
+        success: false,
+        error: "Unable to get browse.",
+      };
+    }
+    return { success: true, res: browse.res.body };
+  }
+  async getStreams(id: string): Promise<VRVret> {
+    const checkCMS = await this.validateCMS();
+    if(checkCMS?.success === false) return checkCMS;
+    let streams = await this._vGetData({
+      url: `${
+        this.config.premium ? domains.premStream : domains.stream
+      }${id}/streams?`,
+      note: `Getting streams for ${id}`,
+      type: "cms",
+    });
+    if (!streams.success)
+      return {
+        success: false,
+        error: `Error while getting the streams for ${id}`,
+      };
+    
+
+    let streamBody = streams.res.body;
+    if (
+      streamBody &&
+      streamBody.streams &&
+      streamBody.streams.adaptive_hls &&
+      (streamBody.streams.adaptive_hls["en-US"] ||
+        streamBody.streams.adaptive_hls[""])
+    ) {
+      let streamURL =
+        (streamBody.streams.adaptive_hls["en-US"] &&
+          streamBody.streams.adaptive_hls["en-US"].url) ||
+        (streamBody.streams.adaptive_hls[""] &&
+          streamBody.streams.adaptive_hls[""].url);
+
+      return { success: true, res: streamURL };
+    }
+    return {
+      success: false,
+      error: "couldn't parse for a valid stream",
+    };
+  }
+  async getEpisodes(id: string): Promise<VRVret> {
+   const checkCMS = await this.validateCMS();
+if(checkCMS?.success === false) return checkCMS;
+
+    let episodes = await this._vGetData({
+      url: this.config.premium ? domains.premEpisodes : domains.episodes,
+      note: `Getting EPISODES for ${id}`,
+      type: "cms",
+      query: new URLSearchParams({
+        season_id: id,
+      }).toString(),
+    });
+    if (!episodes.success)
+      return {
+        success: false,
+        error: "Trouble getting episodes of the anime :(",
+      };
+
+    if (episodes.res.body.total <= 0)
+      return {
+        success: false,
+        error: `No episodes found for ${id}`,
+      };
+
+    return {
+      success: true,
+      res: episodes.res.body,
+    };
+  }
+
+  async getSeasons(id: string): Promise<VRVret> {
+    const checkCMS = await this.validateCMS();
+    if(checkCMS?.success === false) return checkCMS;
+
+    let seasons = await this._vGetData({
+      url: this.config.premium ? domains.premSeasons : domains.seasons,
+      note: `Getting SEASONS for ${id}`,
+      type: "cms",
+      query: new URLSearchParams({
+        series_id: id,
+      }).toString(),
+    });
+    if (!seasons.success)
+      return {
+        success: false,
+        error: "Trouble getting seasons of the anime :(",
+      };
+
+    if (seasons.res.body.total <= 0)
+      return {
+        success: false,
+        error: `No seasons found for ${id}`,
+      };
+
+    return {
+      success: true,
+      res: seasons.res.body,
+    };
+  }
+  /**
    * @description Authenticate the scraper with a premium account
    * @returns {Promise<VRVret>} This is the result
    */
@@ -144,6 +262,7 @@ export default class VRV {
     this.tokenSecret = oauth_token_secret;
     return { success: true };
   }
+
 
   /**
    * @description Get the CMS signing keys for content authorization
@@ -198,6 +317,19 @@ export default class VRV {
       return { success: false, error: "Could not get cms/disc signing keys." };
   }
 
+  async validateCMS(): Promise<VRVret|void> {
+    if (!this.cmsSigning.Policy) {
+      let cmsSigns = await this._getCMS();
+      let retries = 0;
+      while (cmsSigns.success === false) {
+        cmsSigns = await this._getCMS();
+        retries += 1;
+        if (retries >= 15) break;
+      }
+
+      if (retries >= 15) return { success: false, error: cmsSigns.error };
+    }
+  }
   /**
    * @description send authorized requests to VRV api using options
    * @param {getOptions} options - The options for the request
@@ -348,13 +480,14 @@ export default class VRV {
           cms = await this._getCMS();
         }
       }
-      this.lastRequest = new Date();
 
       let res: any = await got(gOptions as Options);
-
+      
       if (res?.body?.toString()?.match(/^</)) {
         throw { name: "HTMLError", res };
       }
+      this.lastRequest = new Date();
+
       return {
         success: true,
         res,

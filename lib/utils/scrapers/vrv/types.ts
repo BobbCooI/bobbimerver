@@ -16,6 +16,9 @@ export const domains = {
   stream: `${api}/cms/v2/US/M3/crunchyroll/videos/`,
   premStream: `${api}/cms/v2/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/videos/`,
   accountPlayheads: `${api}/core/accounts/8883774/playheads?`,
+
+  browse: `${api}/disc/public/v1/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/-/browse?locale=en-US&n=20&sort_by=popularity&start=0&`
+
 };
 export interface config {
   email?: string;
