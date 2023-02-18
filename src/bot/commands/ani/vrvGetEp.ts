@@ -94,13 +94,7 @@ export default new Command(
       mediaEmbeds.push(emb);
     }
 
-    epFromId.message
-      ? await epFromId.message.edit(
-          `Finished! Total time taken: ${slashInt.Bobb.utils.timeMilli(
-            Date.now() - st
-          )}`
-        )
-      : await initial.edit(
+    await initial.edit(
           `Finished! Total time taken: ${slashInt.Bobb.utils.timeMilli(
             Date.now() - st
           )}`

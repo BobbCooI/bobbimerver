@@ -17,6 +17,7 @@ export default new Command(
             .setRequired(true)
         ),
     },
+    enabled: false,
     restrictTo: "guild",
   },
   async ({ slashInt }: executeArgs) => {

@@ -18,5 +18,4 @@ export interface ret {
   success: boolean;
   error?: string;
   res?: any;
-  message?: Message;
 }
