@@ -1,6 +1,6 @@
 import Bobb from "@src/bot/botClass";
 import VRV from "./VRV";
-import { cache, VRVret, searchItem, mediaResourceJson, domains } from "./types";
+import { cache, VRVret, mediaResourceJson } from "./types";
 import { EmbedBuilder } from "discord.js";
 import { ordinate } from "../../utils";
 export default class DiscordVRV {
@@ -21,43 +21,12 @@ export default class DiscordVRV {
    * @returns {Promise<VRVret>} This is the result
    */
   async search(query: string, id: string): Promise<VRVret> {
-    if (!this.VRV.cmsSigning.Policy) {
-      let cmsSigns = await this.VRV._getCMS();
-      let retries = 0;
-      while (cmsSigns.success === false) {
-        cmsSigns = await this.VRV._getCMS();
-        retries += 1;
-        if (retries >= 15) break;
-      }
+    let s: VRVret = await this.VRV.search(query);
+    if(!s.success) return s;
 
-      if (retries >= 15) return { success: false, error: cmsSigns.error };
-    }
-    let s = await this.VRV._vGetData({
-      url: this.VRV.config.premium ? domains.premSearch : domains.search,
-      note: `Searching for ${query}`,
-      type: "disc",
-      query: new URLSearchParams([
-        ["q", query],
-        ["n", "6"],
-      ]).toString(),
-    });
-    if (!s.success)
-      return { success: false, error: "Error while searching for anime" };
-    s = s.res.body;
-    if (s.total === 0)
-      return { success: false, error: "Could not find that anime!" };
-    s = s.items.filter(
-      (res: searchItem): boolean => res.total > 0 && res.type === "series"
-    )[0];
-    if (!s)
-      return {
-        success: false,
-        error: "Could not find a series matching that query!",
-      };
     let res: Array<string> = [];
-    
     await this.Bobb.utils.asyncForEach(
-      s.items,
+      s.res.items,
       async (ani: { title: string; id: string }): Promise<void> => {
         let seasons = await this.VRV.getSeasons(ani.id);
         seasons.res.items.forEach(

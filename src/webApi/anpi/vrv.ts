@@ -53,4 +53,15 @@ router.get("/streams/:id", async (req: Request, res: Response) => {
   return res.send({ success: false, error: anime.error });
 
 });
+
+router.get("/search/:query", async (req: Request, res: Response) => {
+  const { query } = req.params;
+  const anime = await res.locals.vrv.search(query);
+  if (anime.success) {
+    return res.send({ success: true, data: anime.res });
+  }
+
+  return res.send({ success: false, error: anime.error });
+});
+
 export default router;

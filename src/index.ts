@@ -70,7 +70,7 @@ function startWebServer() {
 }
 
 async function mainLaunch() {
-  const vrv = new VRV({ lang: "enUS", debug: false, premium: true });
+  const vrv = new VRV({ lang: "enUS", debug: true, premium: true });
   await vrv.init();
   let auth = await vrv.auth();
   if (!auth!.success) throw new Error(`Oh no! Trouble vrv auth ${auth.error}`);
@@ -85,7 +85,7 @@ async function mainLaunch() {
   });
 
   await db.connector();
-  //await botLaunch(vrv);
+ // await botLaunch(vrv);
   startWebServer();
 }
 

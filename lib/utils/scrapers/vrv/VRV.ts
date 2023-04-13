@@ -13,6 +13,8 @@ import {
   cmsSign,
   getOptions,
   domains,
+  searchItem,
+  mediaResourceStreamsJson,
 } from "./types";
 
 import { gotOptions } from "../common";
@@ -124,8 +126,8 @@ export default class VRV {
    * @returns {Promise<VRVret>} This is the result
    */
   async Browse(): Promise<VRVret> {
-  const checkCMS = await this.validateCMS();
-if(checkCMS?.success === false) return checkCMS;
+    const checkCMS = await this.validateCMS();
+    if (checkCMS?.success === false) return checkCMS;
 
     let browse = await this._vGetData({
       url: domains.browse,
@@ -140,9 +142,37 @@ if(checkCMS?.success === false) return checkCMS;
     }
     return { success: true, res: browse.res.body };
   }
+
+  async search(query: string): Promise<VRVret> {
+    const checkCMS = await this.validateCMS();
+    if (checkCMS?.success === false) return checkCMS;
+    let s = await this._vGetData({
+      url: this.config.premium ? domains.premSearch : domains.search,
+      note: `Searching for ${query}`,
+      type: "disc",
+      query: new URLSearchParams([
+        ["q", query],
+        ["n", "6"],
+      ]).toString(),
+    });
+    if (!s.success)
+      return { success: false, error: "Error while searching for anime" };
+    s = s.res.body;
+    if (s.total === 0)
+      return { success: false, error: "Could not find that anime!" };
+    s = s.items.filter(
+      (res: searchItem): boolean => res.total > 0 && res.type === "series"
+    )[0];
+    if (!s)
+      return {
+        success: false,
+        error: "Could not find a series matching that query!",
+      };
+      return { success: true, res: s };
+  }
   async getStreams(id: string): Promise<VRVret> {
     const checkCMS = await this.validateCMS();
-    if(checkCMS?.success === false) return checkCMS;
+    if (checkCMS?.success === false) return checkCMS;
     let streams = await this._vGetData({
       url: `${
         this.config.premium ? domains.premStream : domains.stream
@@ -155,9 +185,8 @@ if(checkCMS?.success === false) return checkCMS;
         success: false,
         error: `Error while getting the streams for ${id}`,
       };
-    
 
-    let streamBody = streams.res.body;
+    let streamBody: mediaResourceStreamsJson= streams.res.body;
     if (
       streamBody &&
       streamBody.streams &&
@@ -179,8 +208,8 @@ if(checkCMS?.success === false) return checkCMS;
     };
   }
   async getEpisodes(id: string): Promise<VRVret> {
-   const checkCMS = await this.validateCMS();
-if(checkCMS?.success === false) return checkCMS;
+    const checkCMS = await this.validateCMS();
+    if (checkCMS?.success === false) return checkCMS;
 
     let episodes = await this._vGetData({
       url: this.config.premium ? domains.premEpisodes : domains.episodes,
@@ -210,7 +239,7 @@ if(checkCMS?.success === false) return checkCMS;
 
   async getSeasons(id: string): Promise<VRVret> {
     const checkCMS = await this.validateCMS();
-    if(checkCMS?.success === false) return checkCMS;
+    if (checkCMS?.success === false) return checkCMS;
 
     let seasons = await this._vGetData({
       url: this.config.premium ? domains.premSeasons : domains.seasons,
@@ -262,7 +291,6 @@ if(checkCMS?.success === false) return checkCMS;
     this.tokenSecret = oauth_token_secret;
     return { success: true };
   }
-
 
   /**
    * @description Get the CMS signing keys for content authorization
@@ -317,7 +345,7 @@ if(checkCMS?.success === false) return checkCMS;
       return { success: false, error: "Could not get cms/disc signing keys." };
   }
 
-  async validateCMS(): Promise<VRVret|void> {
+  async validateCMS(): Promise<VRVret | void> {
     if (!this.cmsSigning.Policy) {
       let cmsSigns = await this._getCMS();
       let retries = 0;
@@ -482,7 +510,7 @@ if(checkCMS?.success === false) return checkCMS;
       }
 
       let res: any = await got(gOptions as Options);
-      
+
       if (res?.body?.toString()?.match(/^</)) {
         throw { name: "HTMLError", res };
       }

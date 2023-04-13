@@ -6,7 +6,7 @@ const api = "https://api.vrv.co";
 // was between boomerang and crunchyroll before
 // roosterteeth was between nicksplat and vrvselect before
 export const domains = {
-  api ,
+  api,
   search: `${api}/disc/public/v1/US/M3/crunchyroll/-/search?`,
   premSearch: `${api}/disc/public/v1/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/-/search?`,
   episodes: `${api}/cms/v2/US/M3/crunchyroll/episodes?`,
@@ -17,8 +17,7 @@ export const domains = {
   premStream: `${api}/cms/v2/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/videos/`,
   accountPlayheads: `${api}/core/accounts/8883774/playheads?`,
 
-  browse: `${api}/disc/public/v1/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/-/browse?locale=en-US&n=20&sort_by=popularity&start=0&`
-
+  browse: `${api}/disc/public/v1/US/M3/boomerang,crunchyroll,mondo,nicksplat,vrvselect/-/browse?locale=en-US&n=20&sort_by=popularity&start=0&`,
 };
 export interface config {
   email?: string;
@@ -71,11 +70,11 @@ export interface cache extends Record<string, any> {
     choiceID: string; // Looks like this: G6Q4CZ4PQ
     choiceTitle: string;
     aniEps: Array<string>; //Looks like this [  '1st Episode • Reincarnation, in Another World? • GDVFVNQ02',  '2nd Episode • My House, On Fire? • GKKF3ZKP2',  '3rd Episode • Earth Wyrm (Dragon), Bad News? • GVMF0V7QK']
-    selEp: string; // One item from aniEps array of strings 
+    selEp: string; // One item from aniEps array of strings
     embed: EmbedBuilder;
     date: Date;
-    latest: EmbedBuilder
-  }
+    latest: EmbedBuilder;
+  };
 }
 export interface cmsSign extends Record<string, any> {
   Policy: string;
@@ -262,4 +261,65 @@ export interface mediaResourceJson {
   availability_notes: string;
 }
 
-export interface mediaResourceStreamsJson { }
+
+// FOR STREAMS ENDPOINT
+export interface mediaResourceStreamsJson {
+  __class__: string;
+  __href__: string;
+  __resource_key__: string;
+  __links__: {
+    resource: {
+      href: string;
+    };
+  };
+  __actions__: {};
+  media_id: string;
+  audio_locale: string;
+  subtitles: {
+    [key: string]: {
+      locale: string;
+      url: string;
+      format: { [key: string]: string };
+    };
+  };
+  closed_captions: {};
+  streams: Streams;
+  bifs: string[];
+  versions: {
+    audio_locale: string;
+    guid: string;
+    original: boolean;
+    variant: string;
+    season_guid: string;
+    media_guid: string;
+    is_premium_only: boolean;
+  }[];
+  captions: {};
+}
+
+export interface Streams {
+  adaptive_dash: { [key: string]: AdaptiveDash };
+  adaptive_hls: { [key: string]: AdaptiveDash };
+  download_dash: DownloadDash;
+  download_hls: DownloadDash;
+  drm_adaptive_dash: { [key: string]: AdaptiveDash };
+  drm_adaptive_hls: { [key: string]: AdaptiveDash };
+  drm_download_dash: DownloadDash;
+  drm_download_hls: DownloadDash;
+  drm_multitrack_adaptive_hls_v2: { [key: string]: AdaptiveDash };
+  multitrack_adaptive_hls_v2: { [key: string]: AdaptiveDash };
+  urls: DownloadDash;
+  vo_adaptive_dash: { [key: string]: AdaptiveDash };
+  vo_adaptive_hls: { [key: string]: AdaptiveDash };
+  vo_drm_adaptive_dash: { [key: string]: AdaptiveDash };
+  vo_drm_adaptive_hls: { [key: string]: AdaptiveDash };
+}
+
+export interface AdaptiveDash {
+  hardsub_locale: string;
+  url: string;
+}
+
+export interface DownloadDash {
+  "": AdaptiveDash;
+}
